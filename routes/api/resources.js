@@ -21,24 +21,17 @@ router.get("/", function(req, res, next) {
 	console.log("Searching resources...");
 	try{
 		let result = pool.query('SELECT * FROM info');
-		//res.sendStatus(200).json(result.rows);
-		return res.sendStatus(200).json(result.rows);;
+		result.then(function(r){
+			r.rows.forEach(row => {
+				console.log(row);
+			});
+			res.send(r);
+		});
+		return;
 	}catch(error){
 		console.log(error);
 		return next();
 	}
-	// pool.query('SELECT * FROM info', (error, result) => {
-	// 	if(error){
-	// 		console.log("hm deu ruim");
-	// 		console.log(error);
-	// 		//res.sendStatus(500); 
-	// 		return;
-	// 	}
-	// 	else{
-	// 		res.sendStatus(200).json(result.rows);
-	// 		return;
-	// 	}
-	// });
 });
 
 /**
