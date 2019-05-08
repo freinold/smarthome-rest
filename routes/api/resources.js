@@ -16,12 +16,18 @@ router.use(express.json);
  *  SELECT all different resources
  */
 router.get("/", function(req, res, next) {
-	pool.query(/*function*/, (error, result) => {
-		if(error){
-			throw error; 
-		}
-		//return success 
-	});
+	console.log("Searching resources...");
+	try{
+		let result = pool.query(/*function*/);
+		result.then(function(r){
+			//Correct it to display the results better
+			res.send(r);
+		});
+		return;
+	}catch(error){
+		console.log(error);
+		return next();
+	}
 });
 
 /**
@@ -34,12 +40,17 @@ router.get("/:resource_uuid", function (req, res, next) {
 	if(onlyLatest == 'true'){
 		//Change the query string to get the latest resource
 	}
-		pool.query(queryString, [resource_uuid], (error, result) => {
-		if(error){
-			throw error;
-		}
-		//return success
-	});
+	try{
+		let result = pool.query(queryString);
+		result.then(function(r){
+			//Correct it to display the results better
+			res.send(r);
+		});
+		return;
+	}catch(error){
+		console.log(error);
+		return next();
+	}
 });
 
 /**
