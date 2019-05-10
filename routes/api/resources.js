@@ -20,13 +20,10 @@ pool.connect();
 router.get("/", function(req, res, next) {
 	console.log("Searching resources...");
 	try{
-		let result = pool.query(/*function*/);
+		let result = pool.query("SELECT * FROM info;");
 		//Correct it to display the results better
 		result.then(function(r){
-			r.rows.forEach(row => {
-				console.log(row);
-			});
-			res.send(r);
+			res.send(r.rows);
 		});
 		return;
 	}catch(error){
@@ -41,15 +38,14 @@ router.get("/", function(req, res, next) {
 router.get("/:resource_uuid", function (req, res, next) {
 	let resource_uuid = req.params.resource_uuid;
 	let onlyLatest = req.query.onlyLatest;
-	let queryString = ''; 
-	if(onlyLatest == 'true'){
-		//Change the query string to get the latest resource
-	}
+	let queryString = 'SELECT * FROM info ORDER BY name ASC;';
 	try{
 		let result = pool.query(queryString);
 		result.then(function(r){
-			//Correct it to display the results better
-			res.send(r);
+			if(onlyLatest == 'true'){
+				res.send(r.rows[0]);
+			}
+			else res.send(r.rows);
 		});
 		return;
 	}catch(error){
@@ -62,13 +58,13 @@ router.get("/:resource_uuid", function (req, res, next) {
  * CREATE a new resource table, has to return tables UUID.
  */
 router.post("/", function (req, res, next) {
-	let {v_name, v_attributes} = req.body;
+	let {name, email} = req.body;
 	//Not sure aboute the function, maybe create_resource_table(text, text) ?
-	pool.query('create_resource_table($1, $2)', [v_name, v_attributes], (error, result) => {
+	pool.query('INSERT INTO info VALUES ($1, $2)', [name, email], (error, result) => {
 		if(error){
 			throw error;
 		}
-		//res.status(201).send('New table created with UUID: ${v_name}');
+		res.sendStatus(201);
    });  
 });
 
@@ -77,12 +73,14 @@ router.post("/", function (req, res, next) {
  */
 router.post("/:resource_uuid", function (req, res, next) {
     let resource_uuid = req.params.resource_uuid; 
-    // pool.query(/*function*/, [resource_uuid], (error, result) => {
-    // 	if(error){
-    // 		throw error;
-    // 	}
-    // 	//return success 
-    // });
+    let {name, email} = req.body;
+	//Not sure aboute the function, maybe create_resource_table(text, text) ?
+	pool.query('INSERT INTO $1 VALUES ($2, $3)', [resource_uuid, name, email], (error, result) => {
+		if(error){
+			throw error;
+		}
+		res.sendStatus(201);
+   });
 });
 
 /**
