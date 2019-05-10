@@ -40,16 +40,18 @@ router.get("/", function(req, res, next) {
 router.get("/:resource_uuid", function (req, res, next) {
 	let resource_uuid = req.params.resource_uuid;
 	let onlyLatest = req.query.onlyLatest;
-	let queryString = ''; 
-	if(onlyLatest == 'true'){
-		//Change the query string to get the latest resource
+	let queryString = 'SELECT * FROM info ORDER BY name ASC;'; 
+	try{
+		let result = pool.query('SELECT * FROM info');
+		result.then(function(r){
+			if(onlyLatest == 'true') res.send(r.rows[0]);
+			else res.send(r.rows);
+		});
+		return;
+	}catch(error){
+		console.log(error);
+		return next();
 	}
-		pool.query(queryString, [resource_uuid], (error, result) => {
-		if(error){
-			throw error;
-		}
-		//return success
-	});
 });
 
 /**
