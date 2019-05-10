@@ -5,12 +5,14 @@ let Pool = pg.Pool;
 let pool = Pool({
 	user: 'postgres',
 	host: 'localhost',
-	database: 'dataTest',
+	database: 'marina',
 	password: 'password', 
 	port: 5432,
 }); 
 
-router.use(express.json);
+pool.connect();
+
+//router.use(express.json);
 
 /**
  *  SELECT all different resources
@@ -19,8 +21,11 @@ router.get("/", function(req, res, next) {
 	console.log("Searching resources...");
 	try{
 		let result = pool.query(/*function*/);
+		//Correct it to display the results better
 		result.then(function(r){
-			//Correct it to display the results better
+			r.rows.forEach(row => {
+				console.log(row);
+			});
 			res.send(r);
 		});
 		return;
@@ -72,12 +77,12 @@ router.post("/", function (req, res, next) {
  */
 router.post("/:resource_uuid", function (req, res, next) {
     let resource_uuid = req.params.resource_uuid; 
-    pool.query(/*function*/, [resource_uuid], (error, result) => {
-    	if(error){
-    		throw error;
-    	}
-    	//return success 
-    });
+    // pool.query(/*function*/, [resource_uuid], (error, result) => {
+    // 	if(error){
+    // 		throw error;
+    // 	}
+    // 	//return success 
+    // });
 });
 
 /**
@@ -86,12 +91,12 @@ router.post("/:resource_uuid", function (req, res, next) {
 router.put("/:resource_uuid/:row_id", function (req, res, next) {
 	let resource_uuid = req.params.resource_uuid; 
 	let row_id = req.params.row_id;
-	pool.query(/*function*/, [resource_uuid, row_id], (error, result) => {
-		if(error){
-			throw error; 
-		}
-		//return success 
-	});
+	// pool.query(/*function*/, [resource_uuid, row_id], (error, result) => {
+	// 	if(error){
+	// 		throw error; 
+	// 	}
+	// 	//return success 
+	// });
 });
 
 /**
@@ -114,12 +119,12 @@ router.delete("/:resource_uuid", function (req, res, next) {
 router.delete("/:resource_uuid/:row_id", function (req, res, next) {
 	let resource_uuid = req.params.resource_uuid; 
 	let row_id = req.params.row_id;
-	pool.query(/*function*/, [resource_uuid, row_id], (error, result) => {
-		if(error){
-			throw error; 
-		}
-		//return success 
-	});
+	// pool.query(/*function*/, [resource_uuid, row_id], (error, result) => {
+	// 	if(error){
+	// 		throw error; 
+	// 	}
+	// 	//return success 
+	// });
 });
 
 module.exports = router;
