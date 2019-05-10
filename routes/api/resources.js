@@ -5,12 +5,14 @@ let Pool = pg.Pool;
 let pool = Pool({
 	user: 'postgres',
 	host: 'localhost',
-	database: 'dataTest',
+	database: 'marina',
 	password: 'password', 
 	port: 5432,
 }); 
 
-router.use(express.json);
+pool.connect();
+
+//router.use(express.json);
 
 /**
  *  SELECT all different resources
@@ -19,8 +21,11 @@ router.get("/", function(req, res, next) {
 	console.log("Searching resources...");
 	try{
 		let result = pool.query(/*function*/);
+		//Correct it to display the results better
 		result.then(function(r){
-			//Correct it to display the results better
+			r.rows.forEach(row => {
+				console.log(row);
+			});
 			res.send(r);
 		});
 		return;
