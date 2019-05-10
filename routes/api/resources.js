@@ -20,7 +20,7 @@ pool.connect();
 router.get("/", function(req, res, next) {
 	console.log("Searching resources...");
 	try{
-		let result = pool.query('SELECT * FROM info');
+		let result = pool.query("SELECT * FROM info;");
 		result.then(function(r){
 			r.rows.forEach(row => {
 				console.log(row);
@@ -40,10 +40,12 @@ router.get("/", function(req, res, next) {
 router.get("/:resource_uuid", function (req, res, next) {
 	let resource_uuid = req.params.resource_uuid;
 	let onlyLatest = req.query.onlyLatest;
-	let queryString = "SELECT * FROM {0} ORDER BY name ASC;".format(resource_uuid); 
+	let queryString = "SELECT * FROM ${resource_uuid} ORDER BY name ASC;";
 	pool.query(queryString).then(function(r){
-			if(onlyLatest == 'true') res.send(r.rows[0]);
-			else res.send(r.rows);
+			if(onlyLatest == 'true')
+			  res.send(r.rows[0]);
+			else
+			  res.send(r.rows);
 		}).catch(err => console.error('Error executing query', err.stack));
 });
 
