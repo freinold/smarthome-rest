@@ -5,10 +5,10 @@ let Pool = pg.Pool;
 let pool = Pool({
 	user: 'postgres',
 	host: 'localhost',
-	database: 'marina',
+	database: 'dataTest',
 	password: 'password', 
 	port: 5432,
-}); 
+});  
 
 pool.connect();
 
@@ -20,10 +20,13 @@ pool.connect();
 router.get("/", function(req, res, next) {
 	console.log("Searching resources...");
 	try{
-		let result = pool.query("SELECT * FROM info;");
-		//Correct it to display the results better
+		//Still needs to be fixed to be used by views
+		let result = pool.query("SELECT * FROM resources;");
 		result.then(function(r){
-			res.send(r.rows);
+			r.rows.forEach(row => {
+				console.log(row);
+			});
+			res.send(r);
 		});
 		return;
 	}catch(error){
@@ -38,29 +41,22 @@ router.get("/", function(req, res, next) {
 router.get("/:resource_uuid", function (req, res, next) {
 	let resource_uuid = req.params.resource_uuid;
 	let onlyLatest = req.query.onlyLatest;
-	let queryString = 'SELECT * FROM info ORDER BY name ASC;';
-	try{
-		let result = pool.query(queryString);
-		result.then(function(r){
-			if(onlyLatest == 'true'){
-				res.send(r.rows[0]);
-			}
-			else res.send(r.rows);
-		});
-		return;
-	}catch(error){
-		console.log(error);
-		return next();
-	}
+	//Still needs to be fixed to be used by views\
+	let queryString = `SELECT * FROM ${resource_uuid} ORDER BY name ASC;`;
+	pool.query(queryString).then(function(r){
+			if(onlyLatest == 'true')
+			  res.send(r.rows[0]);
+			else
+			  res.send(r.rows);
+		}).catch(err => console.error('Error executing query', err.stack));
 });
 
 /**
  * CREATE a new resource table, has to return tables UUID.
  */
 router.post("/", function (req, res, next) {
-	let {name, email} = req.body;
-	//Not sure aboute the function, maybe create_resource_table(text, text) ?
-	pool.query('INSERT INTO info VALUES ($1, $2)', [name, email], (error, result) => {
+	let {uuid, text1, text2, text3, text4, text5, jsonb, boolean1, boolean2, inet} = req.body;
+	pool.query('SELECT insert_resource($1, $2, $3);', [uuid, text1, text2, text3, text4, text5, jsonb, boolean1, boolean2, inet], (error, result) => {
 		if(error){
 			throw error;
 		}
@@ -73,23 +69,13 @@ router.post("/", function (req, res, next) {
  */
 router.post("/:resource_uuid", function (req, res, next) {
     let resource_uuid = req.params.resource_uuid; 
-<<<<<<< HEAD
     let {name, email} = req.body;
-	//Not sure aboute the function, maybe create_resource_table(text, text) ?
-	pool.query('INSERT INTO $1 VALUES ($2, $3)', [resource_uuid, name, email], (error, result) => {
-		if(error){
-			throw error;
-		}
-		res.sendStatus(201);
-   });
-=======
     pool.query(""/*function*/, [resource_uuid], (error, result) => {
     	if(error){
     		throw error;
     	}
     	//return success 
     });
->>>>>>> d88128c5023a2d96a7026d675836d955b282f846
 });
 
 /**
