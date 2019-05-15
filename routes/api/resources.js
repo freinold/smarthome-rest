@@ -21,12 +21,12 @@ router.get("/", function(req, res, next) {
 	console.log("Searching resources...");
 	try{
 		//Still needs to be fixed to be used by views
-		let result = pool.query("SELECT * FROM resources;");
+		let result = pool.query("SELECT * FROM resource;");
 		result.then(function(r){
 			r.rows.forEach(row => {
 				console.log(row);
 			});
-			res.send(r);
+			res.send(r.rows);
 		});
 		return;
 	}catch(error){
@@ -41,8 +41,9 @@ router.get("/", function(req, res, next) {
 router.get("/:resource_uuid", function (req, res, next) {
 	let resource_uuid = req.params.resource_uuid;
 	let onlyLatest = req.query.onlyLatest;
-	//Still needs to be fixed to be used by views\
-	let queryString = `SELECT * FROM ${resource_uuid} ORDER BY name ASC;`;
+	console.log(resource_uuid.replace("-", ""));
+	//Still needs to be fixed to be used by views
+	let queryString = `SELECT * FROM ${resource_uuid.replace(/-/g, "")} ORDER BY db_time_stamp ASC;`;
 	pool.query(queryString).then(function(r){
 			if(onlyLatest == 'true')
 			  res.send(r.rows[0]);
@@ -69,12 +70,15 @@ router.post("/", function (req, res, next) {
  */
 router.post("/:resource_uuid", function (req, res, next) {
     let resource_uuid = req.params.resource_uuid; 
-    let {name, email} = req.body;
-    pool.query(""/*function*/, [resource_uuid], (error, result) => {
+    let {sample, unit} = req.body;
+    var date = new Date();
+    console.log(date);
+    let queryString = `SELECT insert_${resource_uuid.replace(/-/g, "")}(${sample}, ${unit}, TO_TIMESTAMP('${date.getDate()}-${date.getMonth()}-${date.getYear()}', 'DD-MM-YY'), TO_TIMESTAMP('${date.getDate()}-${date.getMonth()}-${date.getYear()}', 'DD-MM-YY'));`;
+    pool.query(queryString, (error, result) => {
     	if(error){
     		throw error;
     	}
-    	//return success 
+    	res.sendStatus(201); 
     });
 });
 
