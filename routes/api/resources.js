@@ -17,60 +17,74 @@ let pool = Pool({
 /**
  *  SELECT all different resources
  */
-router.get("/", function(req, res, next) {
-	console.log("Searching resources...");
-	try{
-		//Still needs to be fixed to be used by views
-		let result = pool.query("SELECT * FROM resource;");
-		result.then(function(r){
-			r.rows.forEach(row => {
-				console.log(row);
-			});
-			res.send(r.rows);
-		});
-		return;
-	}catch(error){
-		console.log(error);
-		return next();
-	}
+router.get("/", function (req, res, next) {
+  console.log("Searching resources...");
+  try {
+    //Still needs to be fixed to be used by views
+    let result = pool.query("SELECT * FROM resource;");
+    result.then(function (r) {
+      r.rows.forEach(row => {
+        console.log(row);
+      });
+      res.send(r.rows);
+    });
+    return;
+  } catch (error) {
+    console.log(error);
+    return next();
+  }
 });
 
 /**
  *  SELECT from one individual resource table, specified by the UUID.
  */
 router.get("/:resource_uuid", function (req, res, next) {
-	let resource_uuid = req.params.resource_uuid;
-	let onlyLatest = req.query.onlyLatest;
-	console.log(resource_uuid.replace("-", ""));
-	//Still needs to be fixed to be used by views
-	let queryString = `SELECT * FROM ${resource_uuid.replace(/-/g, "")} ORDER BY db_time_stamp ASC;`;
-	pool.query(queryString).then(function(r){
-			if(onlyLatest == 'true')
-			  res.send(r.rows[0]);
-			else
-			  res.send(r.rows);
-		}).catch(err => console.error('Error executing query', err.stack));
+  let resource_uuid = req.params.resource_uuid;
+  let onlyLatest = req.query.onlyLatest;
+  console.log(resource_uuid.replace("-", ""));
+  //Still needs to be fixed to be used by views
+  let queryString = `SELECT * FROM ${resource_uuid.replace(/-/g, "")} ORDER BY db_time_stamp ASC;`;
+  pool.query(queryString).then(function (r) {
+    if (onlyLatest === 'true')
+      res.send(r.rows[0]);
+    else
+      res.send(r.rows);
+  }).catch(err => console.error('Error executing query', err.stack));
 });
 
 /**
  * CREATE a new resource table, has to return tables UUID.
  */
 router.post("/", function (req, res, next) {
-  let query = "";
+  let queryString = "";
   let name = req.body.name, description = req.body.description, string_config = req.body.string_config,
     auto_start = req.body.auto_start, keep_connected = req.body.keep_connected, host_ip = req.body.host_ip;
   if (name && description && string_config && auto_start && keep_connected && host_ip) {
     if (req.body.resource_type_id) {
-      let resource_type_id = req.body.resource_type_id, resource_model_id = req.body.resource_model_id, resource_adapter_id = req.body.resource_adapter_id;
+      let resource_type_id = req.body.resource_type_id, resource_model_id = req.body.resource_model_id,
+        resource_adapter_id = req.body.resource_adapter_id;
       if (resource_type_id && resource_model_id && resource_adapter_id) {
-          let resource_uuid = req.body.resource_uuid;
-          if (resource_uuid) {
-            query = ``.format()
-          }
+        let resource_uuid = req.body.resource_uuid;
+        if (resource_uuid) {
+          queryString = `SELECT insert_resource(${resource_uuid}, ${resource_type_id}, ${resource_model_id}, ${resource_adapter_id}, ${name}, ${description}, ${string_config}, ${auto_start}, ${keep_connected}, ${host_ip});`
+        } else {
+          queryString = `SELECT insert_resource(${resource_type_id}, ${resource_model_id}, ${resource_adapter_id}, ${name}, ${description}, ${string_config}, ${auto_start}, ${keep_connected}, ${host_ip});`
+        }
       }
     } else {
-
+      let resource_uuid = req.body.resource_uuid, resource_type = req.body.resource_type,
+        resource_model = req.body.resource_model, resource_adapter = req.body.resource_adapter;
+      if (resource_uuid && resource_type && resource_model && resource_adapter) {
+        queryString = `SELECT insert_resource(${resource_uuid}, ${resource_type}, ${resource_model}, ${resource_adapter}, ${name}, ${description}, ${string_config}, ${auto_start}, ${keep_connected}, ${host_ip});`
+      }
     }
+  }
+  if (queryString) {
+    pool.query(queryString).then(r => {
+      res.send(r);
+    })
+  } else {
+    res.sendStatus(412);
   }
   //let {uuid, text1, text2, text3, text4, text5, jsonb, boolean1, boolean2, inet} = req.body;
   /*pool.query('SELECT insert_resource($1, $2, $3);', [uuid, text1, text2, text3, text4, text5, jsonb, boolean1, boolean2, inet], (error, result) => {
@@ -85,17 +99,17 @@ router.post("/", function (req, res, next) {
  * INSERT a new row into the specified resource table.
  */
 router.post("/:resource_uuid", function (req, res, next) {
-    let resource_uuid = req.params.resource_uuid; 
-    let {sample, unit} = req.body;
-    var date = new Date();
-    console.log(date);
-    let queryString = `SELECT insert_${resource_uuid.replace(/-/g, "")}(${sample}, ${unit}, TO_TIMESTAMP('${date.getDate()}-${date.getMonth()}-${date.getYear()}', 'DD-MM-YY'), TO_TIMESTAMP('${date.getDate()}-${date.getMonth()}-${date.getYear()}', 'DD-MM-YY'));`;
-    pool.query(queryString, (error, result) => {
-    	if(error){
-    		throw error;
-    	}
-    	res.sendStatus(201);
-    });
+  let resource_uuid = req.params.resource_uuid;
+  let {sample, unit} = req.body;
+  var date = new Date();
+  console.log(date);
+  let queryString = `SELECT insert_${resource_uuid.replace(/-/g, "")}(${sample}, ${unit}, TO_TIMESTAMP('${date.getDate()}-${date.getMonth()}-${date.getYear()}', 'DD-MM-YY'), TO_TIMESTAMP('${date.getDate()}-${date.getMonth()}-${date.getYear()}', 'DD-MM-YY'));`;
+  pool.query(queryString, (error, result) => {
+    if (error) {
+      throw error;
+    }
+    res.sendStatus(201);
+  });
 });
 
 /**
