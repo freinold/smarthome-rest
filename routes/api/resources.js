@@ -73,6 +73,7 @@ router.post("/", function (req, res, next) {
  */
 router.post("/:resource_uuid", function (req, res, next) {
     let resource_uuid = req.params.resource_uuid; 
+<<<<<<< HEAD
     let {name, email} = req.body;
 	//Not sure aboute the function, maybe create_resource_table(text, text) ?
 	pool.query('INSERT INTO $1 VALUES ($2, $3)', [resource_uuid, name, email], (error, result) => {
@@ -81,6 +82,14 @@ router.post("/:resource_uuid", function (req, res, next) {
 		}
 		res.sendStatus(201);
    });
+=======
+    pool.query(""/*function*/, [resource_uuid], (error, result) => {
+    	if(error){
+    		throw error;
+    	}
+    	//return success 
+    });
+>>>>>>> d88128c5023a2d96a7026d675836d955b282f846
 });
 
 /**
@@ -89,12 +98,12 @@ router.post("/:resource_uuid", function (req, res, next) {
 router.put("/:resource_uuid/:row_id", function (req, res, next) {
 	let resource_uuid = req.params.resource_uuid; 
 	let row_id = req.params.row_id;
-	// pool.query(/*function*/, [resource_uuid, row_id], (error, result) => {
-	// 	if(error){
-	// 		throw error; 
-	// 	}
-	// 	//return success 
-	// });
+	pool.query(""/*function*/, [resource_uuid, row_id], (error, result) => {
+		if(error){
+			throw error; 
+		}
+		//return success 
+	});
 });
 
 /**
@@ -117,12 +126,12 @@ router.delete("/:resource_uuid", function (req, res, next) {
 router.delete("/:resource_uuid/:row_id", function (req, res, next) {
 	let resource_uuid = req.params.resource_uuid; 
 	let row_id = req.params.row_id;
-	// pool.query(/*function*/, [resource_uuid, row_id], (error, result) => {
-	// 	if(error){
-	// 		throw error; 
-	// 	}
-	// 	//return success 
-	// });
+	pool.query(""/*function*/, [resource_uuid, row_id], (error, result) => {
+		if(error){
+			throw error; 
+		}
+		//return success 
+	});
 });
 
 module.exports = router;
