@@ -40,7 +40,7 @@ router.get("/", function(req, res, next) {
 router.get("/:resource_uuid", function (req, res, next) {
 	let resource_uuid = req.params.resource_uuid;
 	let onlyLatest = req.query.onlyLatest;
-	let queryString = "SELECT * FROM ${resource_uuid} ORDER BY name ASC;";
+	let queryString = `SELECT * FROM ${resource_uuid} ORDER BY name ASC;`;
 	pool.query(queryString).then(function(r){
 			if(onlyLatest == 'true')
 			  res.send(r.rows[0]);
