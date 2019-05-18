@@ -3,14 +3,14 @@ let pg = require("pg");
 let router = express.Router();
 let Pool = pg.Pool;
 let pool = Pool({
-	user: 'postgres',
-	host: 'localhost',
-	database: 'dataTest',
-	password: 'password', 
-	port: 5432,
-});  
+  user: 'postgres',
+  host: 'localhost',
+  database: 'dataTest',
+  password: 'password',
+  port: 5432,
+});
 
-pool.connect();
+//pool.connect();
 
 //router.use(express.json);
 
@@ -39,30 +39,60 @@ router.get("/", function(req, res, next) {
  *  SELECT from one individual resource table, specified by the UUID.
  */
 router.get("/:resource_uuid", function (req, res, next) {
-	let resource_uuid = req.params.resource_uuid;
-	let onlyLatest = req.query.onlyLatest;
-	console.log(resource_uuid.replace("-", ""));
-	//Still needs to be fixed to be used by views
-	let queryString = `SELECT * FROM ${resource_uuid.replace(/-/g, "")} ORDER BY db_time_stamp ASC;`;
-	pool.query(queryString).then(function(r){
-			if(onlyLatest == 'true')
-			  res.send(r.rows[0]);
-			else
-			  res.send(r.rows);
-		}).catch(err => console.error('Error executing query', err.stack));
+  let resource_uuid = req.params.resource_uuid;
+  let onlyLatest = req.query.onlyLatest;
+  console.log(resource_uuid.replace("-", ""));
+  //Still needs to be fixed to be used by views
+  let queryString = `SELECT * FROM ${resource_uuid.replace(/-/g, "")} ORDER BY db_time_stamp ASC;`;
+  pool.query(queryString).then(function (r) {
+    if (onlyLatest === 'true')
+      res.send(r.rows[0]);
+    else
+      res.send(r.rows);
+  }).catch(err => console.error('Error executing query', err.stack));
 });
 
 /**
  * CREATE a new resource table, has to return tables UUID.
  */
 router.post("/", function (req, res, next) {
-	let {uuid, text1, text2, text3, text4, text5, jsonb, boolean1, boolean2, inet} = req.body;
-	pool.query('SELECT insert_resource($1, $2, $3);', [uuid, text1, text2, text3, text4, text5, jsonb, boolean1, boolean2, inet], (error, result) => {
-		if(error){
-			throw error;
-		}
-		res.sendStatus(201);
-   });  
+  let queryString = "";
+  let name = req.body.name, description = req.body.description, string_config = req.body.string_config,
+    auto_start = req.body.auto_start, keep_connected = req.body.keep_connected, host_ip = req.body.host_ip;
+  if (name && description && string_config && auto_start && keep_connected && host_ip) {
+    if (req.body.resource_type_id) {
+      let resource_type_id = req.body.resource_type_id, resource_model_id = req.body.resource_model_id,
+        resource_adapter_id = req.body.resource_adapter_id;
+      if (resource_type_id && resource_model_id && resource_adapter_id) {
+        let resource_uuid = req.body.resource_uuid;
+        if (resource_uuid) {
+          queryString = `SELECT insert_resource(${resource_uuid}, ${resource_type_id}, ${resource_model_id}, ${resource_adapter_id}, ${name}, ${description}, ${string_config}, ${auto_start}, ${keep_connected}, ${host_ip});`
+        } else {
+          queryString = `SELECT insert_resource(${resource_type_id}, ${resource_model_id}, ${resource_adapter_id}, ${name}, ${description}, ${string_config}, ${auto_start}, ${keep_connected}, ${host_ip});`
+        }
+      }
+    } else {
+      let resource_uuid = req.body.resource_uuid, resource_type = req.body.resource_type,
+        resource_model = req.body.resource_model, resource_adapter = req.body.resource_adapter;
+      if (resource_uuid && resource_type && resource_model && resource_adapter) {
+        queryString = `SELECT insert_resource(${resource_uuid}, ${resource_type}, ${resource_model}, ${resource_adapter}, ${name}, ${description}, ${string_config}, ${auto_start}, ${keep_connected}, ${host_ip});`
+      }
+    }
+  }
+  if (queryString) {
+    pool.query(queryString).then(r => {
+      res.send(r);
+    })
+  } else {
+    res.sendStatus(412);
+  }
+  //let {uuid, text1, text2, text3, text4, text5, jsonb, boolean1, boolean2, inet} = req.body;
+  /*pool.query('SELECT insert_resource($1, $2, $3);', [uuid, text1, text2, text3, text4, text5, jsonb, boolean1, boolean2, inet], (error, result) => {
+    if(error){
+      throw error;
+    }
+    res.sendStatus(201);
+   });  */
 });
 
 /**
@@ -86,42 +116,42 @@ router.post("/:resource_uuid", function (req, res, next) {
  * UPDATE table "uuid" WHERE id = "row_id".
  */
 router.put("/:resource_uuid/:row_id", function (req, res, next) {
-	let resource_uuid = req.params.resource_uuid; 
-	let row_id = req.params.row_id;
-	pool.query(""/*function*/, [resource_uuid, row_id], (error, result) => {
-		if(error){
-			throw error; 
-		}
-		//return success 
-	});
+  let resource_uuid = req.params.resource_uuid;
+  let row_id = req.params.row_id;
+  pool.query(""/*function*/, [resource_uuid, row_id], (error, result) => {
+    if (error) {
+      throw error;
+    }
+    //return success
+  });
 });
 
 /**
  * DROP TABLE "uuid" & probably delete row with the resource_uuid in the resorcues table.
  */
 router.delete("/:resource_uuid", function (req, res, next) {
-	const resource_uuid = req.params.resource_uuid; 
-	//Not sure about the function, maybe delete_resource_db_objects(uuid) ?
-	pool.query('delete_resource_db_objects($1)', [resource_uuid], (error, result) => {
-		if(error){
-			throw error;
-		}
-		res.stauts(200).send('Table deleted with ID: ${resource_uuid}');
-	})
+  const resource_uuid = req.params.resource_uuid;
+  //Not sure about the function, maybe delete_resource_db_objects(uuid) ?
+  pool.query('delete_resource_db_objects($1)', [resource_uuid], (error, result) => {
+    if (error) {
+      throw error;
+    }
+    res.stauts(200).send('Table deleted with ID: ${resource_uuid}');
+  })
 });
 
 /**
  * DELETE the row with row_id from table with resource_id.
  */
 router.delete("/:resource_uuid/:row_id", function (req, res, next) {
-	let resource_uuid = req.params.resource_uuid; 
-	let row_id = req.params.row_id;
-	pool.query(""/*function*/, [resource_uuid, row_id], (error, result) => {
-		if(error){
-			throw error; 
-		}
-		//return success 
-	});
+  let resource_uuid = req.params.resource_uuid;
+  let row_id = req.params.row_id;
+  pool.query(""/*function*/, [resource_uuid, row_id], (error, result) => {
+    if (error) {
+      throw error;
+    }
+    //return success
+  });
 });
 
 module.exports = router;
