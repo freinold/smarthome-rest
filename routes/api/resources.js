@@ -21,7 +21,7 @@ router.get("/", function(req, res, next) {
 	console.log("Searching resources...");
 	try{
 		//Still needs to be fixed to be used by views
-		let result = pool.query("SELECT * FROM resource;");
+		let result = pool.query("SELECT * FROM resource_view;");
 		result.then(function(r){
 			r.rows.forEach(row => {
 				console.log(row);
@@ -70,7 +70,7 @@ router.post("/", function (req, res, next) {
  */
 router.post("/:resource_uuid", function (req, res, next) {
     let resource_uuid = req.params.resource_uuid; 
-    let {sample, unit} = req.body;
+    let sample = req.body.sample, unit = req.body.unit;
     var date = new Date();
     console.log(date);
     let queryString = `SELECT insert_${resource_uuid.replace(/-/g, "")}(${sample}, ${unit}, TO_TIMESTAMP('${date.getDate()}-${date.getMonth()}-${date.getYear()}', 'DD-MM-YY'), TO_TIMESTAMP('${date.getDate()}-${date.getMonth()}-${date.getYear()}', 'DD-MM-YY'));`;
