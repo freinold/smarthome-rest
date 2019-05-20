@@ -1,14 +1,10 @@
 let express = require("express");
 let pg = require("pg");
+let fs = require("fs");
 let router = express.Router();
 let Pool = pg.Pool;
-let pool = Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'dataTest',
-  password: 'password',
-  port: 5432,
-});
+let dbConfig = fs.readFile(__dirname + "../db/db_config.json");
+let pool = Pool(JSON.parse(dbConfig));
 
 pool.connect();
 
@@ -17,12 +13,10 @@ router.use(express.json());
 /**
  *  SELECT all different resources
  */
-router.get("/", function(req, res, next) {
-	console.log("Searching resources...");
-	let queryString = 'SELECT * FROM resource_view';
-
-  pool.query(queryString).then((r) => {
-    res.send(r.rows);
+router.get("/", function (req, res, next) {
+  let queryString = `SELECT * FROM resource_view`;
+  pool.query(queryString).then((result) => {
+    res.send(result.rows);
   }).catch(err => res.status(400).send("Error processing database request:\n", err));
 
 });
@@ -121,12 +115,12 @@ router.post("/", function (req, res, next) {
     // No queryString present or booleans in the wrong format -> Wrong parameters, send HTTP Error Code 418: I'm a teapot.
     let errorMessage = "";
     if (queryString === "") {
-      errorMessage += "One of the required parameters was missing or the JSON representation was wrong.\nProvided JSON was:\n" + JSON.stringify(req.body) + "\n"; 
+      errorMessage += "One of the required parameters was missing or the JSON representation was wrong.\nProvided JSON was:\n" + JSON.stringify(req.body) + "\n";
     }
     if (!booleansInRightFormat) {
       errorMessage += "One of the boolean values was not provided the right way, please check the representation."
     }
-    res.status(400).send("Error processing payload:\n"+errorMessage);
+    res.status(400).send("Error processing payload:\n" + errorMessage);
   }
 });
 
@@ -134,12 +128,12 @@ router.post("/", function (req, res, next) {
  * INSERT a new row into the specified resource table.
  */
 router.post("/:resource_uuid", function (req, res, next) {
-    let resource_uuid = req.params.resource_uuid; 
-    let sample = req.body.sample, unit = req.body.unit;
-    let queryString = `SELECT insert_${resource_uuid.replace(/-/g, "")}(${sample}, ${unit}, (SELECT CURRENT_TIMESTAMP), (SELECT CURRENT_TIMESTAMP));`;
-    pool.query(queryString).then(function(r) {
-      res.sendStatus(201).send(r); 
-    }).catch(err => res.status(400).send("Error processing database request:\n", err));
+  let resource_uuid = req.params.resource_uuid;
+  let sample = req.body.sample, unit = req.body.unit;
+  let queryString = `SELECT insert_${resource_uuid.replace(/-/g, "")}(${sample}, ${unit}, (SELECT CURRENT_TIMESTAMP), (SELECT CURRENT_TIMESTAMP));`;
+  pool.query(queryString).then((queryResult) => {
+    res.sendStatus(201).send(queryResult);
+  }).catch(err => res.status(400).send("Error processing database request:\n", err));
 
 });
 
@@ -161,13 +155,13 @@ router.put("/:resource_uuid/:row_id", function (req, res, next) {
  * DROP TABLE "uuid".
  */
 router.delete("/:resource_uuid", function (req, res, next) {
-    let resource_uuid = req.params.resource_uuid;
-  	let queryString = `SELECT drop_resource_table('${resource_uuid.replace(/-/g, "")}');`;
-    console.log(queryString);
-  	pool.query(queryString).then((r) => {
-      res.sendStatus(200);
-      console.log('Table deleted.');
-    }).catch(err => res.status(400).send("Error processing database request:\n", err));
+  let resource_uuid = req.params.resource_uuid;
+  let queryString = `SELECT drop_resource_table('${resource_uuid.replace(/-/g, "")}');`;
+  console.log(queryString);
+  pool.query(queryString).then(() => {
+    res.sendStatus(200);
+    console.log('Table deleted.');
+  }).catch(err => res.status(400).send("Error processing database request:\n", err));
 });
 
 /**
