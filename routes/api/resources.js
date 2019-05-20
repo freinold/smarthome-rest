@@ -1,14 +1,17 @@
 let express = require("express");
 let pg = require("pg");
 let fs = require("fs");
-let router = express.Router();
-let Pool = pg.Pool;
-let dbConfig = fs.readFile(__dirname + "../db/db_config.json");
-let pool = Pool(JSON.parse(dbConfig));
 
+let router = express.Router();
+router.use(express.json());
+
+let dbConfig = fs.readFile(__dirname + "../db/db_config.json");
+dbConfig = JSON.parse(dbConfig);
+
+let Pool = pg.Pool;
+let pool = Pool(dbConfig);
 pool.connect();
 
-router.use(express.json());
 
 /**
  *  SELECT all different resources
