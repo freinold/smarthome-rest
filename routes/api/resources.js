@@ -6,7 +6,7 @@ let router = express.Router();
 router.use(express.json());
 
 let dbConfig;
-fs.readFile(__dirname + "../db/db_config.json", (content) => {
+fs.readFile(__dirname.replace("/routes/api", "") + "/db/db_config.json", (content) => {
   dbConfig = JSON.parse(content);
 });
 
@@ -86,7 +86,7 @@ router.post("/", function (req, res, next) {
         booleansInRightFormat = false;
         break;
     }
-    // Checks if the resource type id is present. If yes, all resource related parameters should be given as ids
+    // Checks if the resource type id is present. If yes, all resource related parameters should be given as ids.
     if (req.body.resource_type_id) {
       console.log(req.body.resource_type_id);
       let resource_type_id = req.body.resource_type_id, resource_model_id = req.body.resource_model_id,
