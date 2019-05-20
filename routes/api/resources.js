@@ -50,39 +50,74 @@ router.get("/:resource_uuid", function (req, res, next) {
 router.post("/", function (req, res, next) {
   console.log(req.body);
   let queryString = "";
+  let booleansInRightFormat = true;
   let name = req.body.name, description = req.body.description, string_config = req.body.string_config,
     auto_start = req.body.auto_start, keep_connected = req.body.keep_connected, host_ip = req.body.host_ip;
+  // Checks for presence of the parameters needed for all 3 functions
   if (name && description && string_config && auto_start && keep_connected && host_ip) {
+    // Check if both booleans are in the right format.
+    switch (auto_start) {
+      case true:
+        auto_start = "TRUE";
+        break;
+      case false:
+        auto_start = "FALSE";
+        break;
+      case "TRUE":
+      case "FALSE":
+        break;
+      default:
+        booleansInRightFormat = false;
+        break;
+    }
+    switch (keep_connected) {
+      case true:
+        keep_connected = "TRUE";
+        break;
+      case false:
+        keep_connected = "FALSE";
+        break;
+      case "TRUE":
+      case "FALSE":
+        break;
+      default:
+        booleansInRightFormat = false;
+        break;
+    }
+    // Checks if the resource type id is present. If yes, all resource related parameters should be given as ids
     if (req.body.resource_type_id) {
       let resource_type_id = req.body.resource_type_id, resource_model_id = req.body.resource_model_id,
         resource_adapter_id = req.body.resource_adapter_id;
+      // Checks if all the other resouce related parameters are actually there.
       if (resource_type_id && resource_model_id && resource_adapter_id) {
         let resource_uuid = req.body.resource_uuid;
+        // Checks if there is already a resource uuid present.
         if (resource_uuid) {
           queryString = `SELECT insert_resource('${resource_uuid}', '${resource_type_id}', '${resource_model_id}', '${resource_adapter_id}', ${name}, ${description}, '${string_config}', ${auto_start}, ${keep_connected}, '${host_ip}');`
-        	console.log(queryString);
         } else {
-          console.log("Second if");
           queryString = `SELECT insert_resource('${resource_type_id}', '${resource_model_id}', '${resource_adapter_id}', '${name}', '${description}', '${string_config}', ${auto_start}, ${keep_connected}, '${host_ip}');`
         }
       }
     } else {
-      console.log("Third if");
+      // All resource related parameters should be given as text.
       let resource_uuid = req.body.resource_uuid, resource_type = req.body.resource_type,
         resource_model = req.body.resource_model, resource_adapter = req.body.resource_adapter;
+      // Check if the resource related parameters and the resource uuid are actually there.
       if (resource_uuid && resource_type && resource_model && resource_adapter) {
         queryString = `SELECT insert_resource('${resource_uuid}', '${resource_type}', '${resource_model}', '${resource_adapter}', '${name}', '${description}', '${string_config}', ${auto_start}, ${keep_connected}, '${host_ip}');`
       }
     }
   }
-  if (queryString) {
+  if (queryString && booleansInRightFormat) {
+    // queryString is present and booleans in the right format, so the parameters were legal.
+    console.log(queryString);
     pool.query(queryString).then(r => {
       res.send(r);
     }).catch(err => console.error('Error executing query', err.stack));
   } else {
-    res.sendStatus(412);
+    // No queryString present or booleans in the wrong format -> Wrong parameters, send HTTP Error Code 418: I'm a teapot.
+    res.sendStatus(418);
   }
-
 });
 
 /**
@@ -121,10 +156,10 @@ router.put("/:resource_uuid/:row_id", function (req, res, next) {
  */
 router.delete("/:resource_uuid", function (req, res, next) {
     let resource_uuid = req.params.resource_uuid;
-  	let queryString = `SELECT drop_resource_table('${resource_uuid.replace(/-/g, "")}');`; 
+  	let queryString = `SELECT drop_resource_table('${resource_uuid.replace(/-/g, "")}');`;
     console.log(queryString);
   	pool.query(queryString).then(function(){
-      res.sendStatus(200); 
+      res.sendStatus(200);
       console.log('Table deleted.');
     }).catch(err => console.error('Error executing query', err.stack));
 });
