@@ -10,9 +10,9 @@ let pool = Pool({
   port: 5432,
 });
 
-//pool.connect();
+pool.connect();
 
-//router.use(express.json);
+router.use(express.json());
 
 /**
  *  SELECT all different resources
@@ -56,6 +56,7 @@ router.get("/:resource_uuid", function (req, res, next) {
  * CREATE a new resource table, has to return tables UUID.
  */
 router.post("/", function (req, res, next) {
+  console.log(req.body);
   let queryString = "";
   let name = req.body.name, description = req.body.description, string_config = req.body.string_config,
     auto_start = req.body.auto_start, keep_connected = req.body.keep_connected, host_ip = req.body.host_ip;
@@ -66,12 +67,15 @@ router.post("/", function (req, res, next) {
       if (resource_type_id && resource_model_id && resource_adapter_id) {
         let resource_uuid = req.body.resource_uuid;
         if (resource_uuid) {
-          queryString = `SELECT insert_resource(${resource_uuid}, ${resource_type_id}, ${resource_model_id}, ${resource_adapter_id}, ${name}, ${description}, ${string_config}, ${auto_start}, ${keep_connected}, ${host_ip});`
+          queryString = `SELECT insert_resource('${resource_uuid}', '${resource_type_id}', '${resource_model_id}', '${resource_adapter_id}', ${name}, ${description}, '${string_config}', ${auto_start}, ${keep_connected}, '${host_ip}');`
+        	console.log(queryString);
         } else {
+          console.log("Second if");
           queryString = `SELECT insert_resource(${resource_type_id}, ${resource_model_id}, ${resource_adapter_id}, ${name}, ${description}, ${string_config}, ${auto_start}, ${keep_connected}, ${host_ip});`
         }
       }
     } else {
+      console.log("Third if");
       let resource_uuid = req.body.resource_uuid, resource_type = req.body.resource_type,
         resource_model = req.body.resource_model, resource_adapter = req.body.resource_adapter;
       if (resource_uuid && resource_type && resource_model && resource_adapter) {
@@ -82,7 +86,7 @@ router.post("/", function (req, res, next) {
   if (queryString) {
     pool.query(queryString).then(r => {
       res.send(r);
-    })
+    }).catch(err => console.error('Error executing query', err.stack));
   } else {
     res.sendStatus(412);
   }
@@ -122,7 +126,7 @@ router.put("/:resource_uuid/:row_id", function (req, res, next) {
     if (error) {
       throw error;
     }
-    //return success
+    res.sendStatus(201);
   });
 });
 
@@ -130,13 +134,13 @@ router.put("/:resource_uuid/:row_id", function (req, res, next) {
  * DROP TABLE "uuid" & probably delete row with the resource_uuid in the resorcues table.
  */
 router.delete("/:resource_uuid", function (req, res, next) {
-  const resource_uuid = req.params.resource_uuid;
-  //Not sure about the function, maybe delete_resource_db_objects(uuid) ?
-  pool.query('delete_resource_db_objects($1)', [resource_uuid], (error, result) => {
+    let resource_uuid = req.params.resource_uuid;
+  	let queryString = `SELECT drop_resource_table(${resource_uuid})`; 
+  	pool.query(queryString, (error, result) => {
     if (error) {
       throw error;
     }
-    res.stauts(200).send('Table deleted with ID: ${resource_uuid}');
+    res.stauts(200).send(`Table deleted with ID: ${resource_uuid}`);
   })
 });
 
@@ -153,5 +157,6 @@ router.delete("/:resource_uuid/:row_id", function (req, res, next) {
     //return success
   });
 });
+
 
 module.exports = router;
