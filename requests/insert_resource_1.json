@@ -1,0 +1,29 @@
+{
+  "resource_uuid": "a17c2b8052964c4987364fb4892d02a2",
+  "resource_type": "Sensor",
+  "resource_model": "LWST-605",
+  "resource_adapter": "LWST-605",
+  "name": "Nexa LWST 605 2Ch Wall Switch Transmiter - 9121562",
+  "description": "2Ch Wall Switch Entrance 9121562",
+  "string_config": {
+    "class": "command",
+    "protocol": "arctech",
+    "model": "selflearning",
+    "house": [
+      "9121562"
+    ],
+    "unit": [
+      "11",
+      "12"
+    ],
+    "group": "0",
+    "method": [
+      "turnon",
+      "turnoff"
+    ],
+    "timeout": "1.0"
+  },
+  "auto_start": "TRUE",
+  "keep_connected": "FALSE",
+  "host_ip": "10.10.10.10"
+}
