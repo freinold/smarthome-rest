@@ -3,5 +3,8 @@ Final project for the course Web Systems Fundamentals at Halmstad University 201
 Rest API built with node.js. 
 
 To run it, use: 
-npm start
-node bin/www 
+
+$ npm start
+
+$ node bin/www 
+
