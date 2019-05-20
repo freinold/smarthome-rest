@@ -29,6 +29,7 @@ router.get("/", function(req, res, next) {
 
 /**
  *  SELECT from one individual resource table, specified by the UUID.
+ *  To get the last entry only, specify onlyLatest=true
  */
 router.get("/:resource_uuid", function (req, res, next) {
   let resource_uuid = req.params.resource_uuid;
@@ -91,15 +92,11 @@ router.post("/", function (req, res, next) {
 router.post("/:resource_uuid", function (req, res, next) {
     let resource_uuid = req.params.resource_uuid; 
     let sample = req.body.sample, unit = req.body.unit;
-    var date = new Date();
-    console.log(date);
-    let queryString = `SELECT insert_${resource_uuid.replace(/-/g, "")}(${sample}, ${unit}, TO_TIMESTAMP('${date.getDate()}-${date.getMonth()}-${date.getYear()}', 'DD-MM-YY'), TO_TIMESTAMP('${date.getDate()}-${date.getMonth()}-${date.getYear()}', 'DD-MM-YY'));`;
-    pool.query(queryString, (error, result) => {
-    	if(error){
-    		throw error;
-    	}
-    	res.sendStatus(201); 
-    });
+    let queryString = `SELECT insert_${resource_uuid.replace(/-/g, "")}(${sample}, ${unit}, (SELECT CURRENT_TIMESTAMP), (SELECT CURRENT_TIMESTAMP));`;
+    pool.query(queryString).then(function(r) {
+      res.sendStatus(201).send(r); 
+    }).catch(err => console.error('Error executing query', err.stack));
+
 });
 
 /**
@@ -117,7 +114,7 @@ router.put("/:resource_uuid/:row_id", function (req, res, next) {
 });
 
 /**
- * DROP TABLE "uuid" & probably delete row with the resource_uuid in the resorcues table.
+ * DROP TABLE "uuid".
  */
 router.delete("/:resource_uuid", function (req, res, next) {
     let resource_uuid = req.params.resource_uuid;
