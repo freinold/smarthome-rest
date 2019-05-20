@@ -19,20 +19,12 @@ router.use(express.json());
  */
 router.get("/", function(req, res, next) {
 	console.log("Searching resources...");
-	try{
-		//Still needs to be fixed to be used by views
-		let result = pool.query("SELECT * FROM resource_view;");
-		result.then(function(r){
-			r.rows.forEach(row => {
-				console.log(row);
-			});
-			res.send(r.rows);
-		});
-		return;
-	}catch(error){
-		console.log(error);
-		return next();
-	}
+	let queryString = 'SELECT * FROM resource_view';
+
+  pool.query(queryString).then(function(r) {
+    res.send(r.rows);
+  }).catch(err => console.log('Err executing query', err.stack));
+
 });
 
 /**
@@ -71,7 +63,7 @@ router.post("/", function (req, res, next) {
         	console.log(queryString);
         } else {
           console.log("Second if");
-          queryString = `SELECT insert_resource(${resource_type_id}, ${resource_model_id}, ${resource_adapter_id}, ${name}, ${description}, ${string_config}, ${auto_start}, ${keep_connected}, ${host_ip});`
+          queryString = `SELECT insert_resource('${resource_type_id}', '${resource_model_id}', '${resource_adapter_id}', '${name}', '${description}', '${string_config}', ${auto_start}, ${keep_connected}, '${host_ip}');`
         }
       }
     } else {
@@ -79,7 +71,7 @@ router.post("/", function (req, res, next) {
       let resource_uuid = req.body.resource_uuid, resource_type = req.body.resource_type,
         resource_model = req.body.resource_model, resource_adapter = req.body.resource_adapter;
       if (resource_uuid && resource_type && resource_model && resource_adapter) {
-        queryString = `SELECT insert_resource(${resource_uuid}, ${resource_type}, ${resource_model}, ${resource_adapter}, ${name}, ${description}, ${string_config}, ${auto_start}, ${keep_connected}, ${host_ip});`
+        queryString = `SELECT insert_resource('${resource_uuid}', '${resource_type}', '${resource_model}', '${resource_adapter}', '${name}', '${description}', '${string_config}', ${auto_start}, ${keep_connected}, '${host_ip}');`
       }
     }
   }
@@ -90,13 +82,7 @@ router.post("/", function (req, res, next) {
   } else {
     res.sendStatus(412);
   }
-  //let {uuid, text1, text2, text3, text4, text5, jsonb, boolean1, boolean2, inet} = req.body;
-  /*pool.query('SELECT insert_resource($1, $2, $3);', [uuid, text1, text2, text3, text4, text5, jsonb, boolean1, boolean2, inet], (error, result) => {
-    if(error){
-      throw error;
-    }
-    res.sendStatus(201);
-   });  */
+
 });
 
 /**
@@ -135,13 +121,12 @@ router.put("/:resource_uuid/:row_id", function (req, res, next) {
  */
 router.delete("/:resource_uuid", function (req, res, next) {
     let resource_uuid = req.params.resource_uuid;
-  	let queryString = `SELECT drop_resource_table(${resource_uuid})`; 
-  	pool.query(queryString, (error, result) => {
-    if (error) {
-      throw error;
-    }
-    res.stauts(200).send(`Table deleted with ID: ${resource_uuid}`);
-  })
+  	let queryString = `SELECT drop_resource_table('${resource_uuid.replace(/-/g, "")}');`; 
+    console.log(queryString);
+  	pool.query(queryString).then(function(){
+      res.sendStatus(200); 
+      console.log('Table deleted.');
+    }).catch(err => console.error('Error executing query', err.stack));
 });
 
 /**
