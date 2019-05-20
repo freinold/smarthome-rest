@@ -1,3 +1,10 @@
 extends layout
 
 block content
+    form(action="send()")
+        label(for="resource_uuid") Resource UUID
+        input(id="resource_uuid" type="text" name="resource_uuid")
+        input(type="submit")
+
+append scripts
+    script $("#link-insert_resource").addClass("active");
