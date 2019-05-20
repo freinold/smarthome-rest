@@ -23,7 +23,7 @@
     ],
     "timeout": "1.0"
   },
-  "auto_start": "TRUE",
-  "keep_connected": "FALSE",
+  "auto_start": true,
+  "keep_connected": false,
   "host_ip": "10.10.10.10"
 }
