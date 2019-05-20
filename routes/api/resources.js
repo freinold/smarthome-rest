@@ -21,9 +21,9 @@ router.get("/", function(req, res, next) {
 	console.log("Searching resources...");
 	let queryString = 'SELECT * FROM resource_view';
 
-  pool.query(queryString).then(function(r) {
+  pool.query(queryString).then((r) => {
     res.send(r.rows);
-  }).catch(err => console.log('Err executing query', err.stack));
+  }).catch(err => res.status(400).send("Error processing database request:\n", err));
 
 });
 
@@ -37,12 +37,12 @@ router.get("/:resource_uuid", function (req, res, next) {
   console.log(resource_uuid.replace("-", ""));
   //Still needs to be fixed to be used by views
   let queryString = `SELECT * FROM ${resource_uuid.replace(/-/g, "")} ORDER BY db_time_stamp ASC;`;
-  pool.query(queryString).then(function (r) {
+  pool.query(queryString).then((r) => {
     if (onlyLatest === 'true')
       res.send(r.rows[0]);
     else
       res.send(r.rows);
-  }).catch(err => console.error('Error executing query', err.stack));
+  }).catch(err => res.status(400).send("Error processing database request:\n", err));
 });
 
 /**
@@ -55,7 +55,9 @@ router.post("/", function (req, res, next) {
   let name = req.body.name, description = req.body.description, string_config = req.body.string_config,
     auto_start = req.body.auto_start, keep_connected = req.body.keep_connected, host_ip = req.body.host_ip;
   // Checks for presence of the parameters needed for all 3 functions
-  if (name && description && string_config && auto_start && keep_connected && host_ip) {
+  if (name && description && string_config && (auto_start != null) && (keep_connected != null) && host_ip) {
+    string_config = JSON.stringify(string_config);
+    console.log(string_config);
     // Check if both booleans are in the right format.
     switch (auto_start) {
       case true:
@@ -87,6 +89,7 @@ router.post("/", function (req, res, next) {
     }
     // Checks if the resource type id is present. If yes, all resource related parameters should be given as ids
     if (req.body.resource_type_id) {
+      console.log(req.body.resource_type_id);
       let resource_type_id = req.body.resource_type_id, resource_model_id = req.body.resource_model_id,
         resource_adapter_id = req.body.resource_adapter_id;
       // Checks if all the other resouce related parameters are actually there.
@@ -111,13 +114,19 @@ router.post("/", function (req, res, next) {
   }
   if (queryString && booleansInRightFormat) {
     // queryString is present and booleans in the right format, so the parameters were legal.
-    console.log(queryString);
     pool.query(queryString).then(r => {
       res.send(r);
-    }).catch(err => console.error('Error executing query', err.stack));
+    }).catch(err => res.status(400).send("Error processing database request:\n", err));
   } else {
     // No queryString present or booleans in the wrong format -> Wrong parameters, send HTTP Error Code 418: I'm a teapot.
-    res.sendStatus(418);
+    let errorMessage = "";
+    if (queryString === "") {
+      errorMessage += "One of the required parameters was missing or the JSON representation was wrong.\nProvided JSON was:\n" + JSON.stringify(req.body) + "\n"; 
+    }
+    if (!booleansInRightFormat) {
+      errorMessage += "One of the boolean values was not provided the right way, please check the representation."
+    }
+    res.status(400).send("Error processing payload:\n"+errorMessage);
   }
 });
 
@@ -130,7 +139,7 @@ router.post("/:resource_uuid", function (req, res, next) {
     let queryString = `SELECT insert_${resource_uuid.replace(/-/g, "")}(${sample}, ${unit}, (SELECT CURRENT_TIMESTAMP), (SELECT CURRENT_TIMESTAMP));`;
     pool.query(queryString).then(function(r) {
       res.sendStatus(201).send(r); 
-    }).catch(err => console.error('Error executing query', err.stack));
+    }).catch(err => res.status(400).send("Error processing database request:\n", err));
 
 });
 
@@ -155,10 +164,10 @@ router.delete("/:resource_uuid", function (req, res, next) {
     let resource_uuid = req.params.resource_uuid;
   	let queryString = `SELECT drop_resource_table('${resource_uuid.replace(/-/g, "")}');`;
     console.log(queryString);
-  	pool.query(queryString).then(function(){
+  	pool.query(queryString).then((r) => {
       res.sendStatus(200);
       console.log('Table deleted.');
-    }).catch(err => console.error('Error executing query', err.stack));
+    }).catch(err => res.status(400).send("Error processing database request:\n", err));
 });
 
 /**
