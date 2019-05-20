@@ -128,12 +128,12 @@ router.post("/", function (req, res, next) {
  * INSERT a new row into the specified resource table.
  */
 router.post("/:resource_uuid", function (req, res, next) {
-    let resource_uuid = req.params.resource_uuid; 
-    let sample = req.body.sample, unit = req.body.unit;
-    let queryString = `SELECT insert_${resource_uuid.replace(/-/g, "")}(${sample}, ${unit}, (SELECT CURRENT_TIMESTAMP), (SELECT CURRENT_TIMESTAMP));`;
-    pool.query(queryString).then((queryResult) => {
-      res.status(201).send(queryResult);
-    }).catch(err => res.status(400).send("Error processing database request:\n", err));
+  let resource_uuid = req.params.resource_uuid;
+  let sample = req.body.sample, unit = req.body.unit;
+  let queryString = `SELECT insert_${resource_uuid.replace(/-/g, "")}(${sample}, ${unit}, (SELECT CURRENT_TIMESTAMP), (SELECT CURRENT_TIMESTAMP));`;
+  pool.query(queryString).then((queryResult) => {
+    res.status(201).send(queryResult);
+  }).catch(err => res.status(400).send("Error processing database request:\n", err));
 
 });
 
@@ -155,13 +155,13 @@ router.put("/:resource_uuid/:row_id", function (req, res, next) {
  * DROP TABLE "uuid".
  */
 router.delete("/:resource_uuid", function (req, res, next) {
-    let resource_uuid = req.params.resource_uuid;
-  	let queryString = `SELECT drop_resource_table('${resource_uuid.replace(/-/g, "")}');`;
-    console.log(queryString);
-  	pool.query(queryString).then((queryResult) => {
-      res.sendStatus(200);
-      console.log('Table deleted.');
-    }).catch(err => res.status(400).send("Error processing database request:\n", err));
+  let resource_uuid = req.params.resource_uuid;
+  let queryString = `SELECT drop_resource_table('${resource_uuid.replace(/-/g, "")}');`;
+  console.log(queryString);
+  pool.query(queryString).then((queryResult) => {
+    res.sendStatus(200);
+    console.log('Table deleted.');
+  }).catch(err => res.status(400).send("Error processing database request:\n", err));
 });
 
 /**
