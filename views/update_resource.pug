@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    h1= title
+
+append scripts
+    script.
+      $(function () {
+        $("#nav-dropdown-update-resource").addClass("active");
+        $("#nav-dropdown-update").addClass("active");
+      });

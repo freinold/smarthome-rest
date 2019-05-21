@@ -2,3 +2,10 @@ extends layout
 
 block content
     h1= title
+
+append scripts
+    script.
+      $(function () {
+        $("#nav-dropdown-create-insert_row").addClass("active");
+        $("#nav-dropdown-create").addClass("active");
+      });

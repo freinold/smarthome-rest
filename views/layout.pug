@@ -2,21 +2,34 @@ doctype html
 html
     head
         block head
-            title= title
+            title= "SmartHome-REST - " + title
             link(rel="stylesheet", href="/stylesheets/style.css")
             link(rel='stylesheet', href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous")
     body
         block nav
             nav(class="navbar sticky-top navbar-expand-md navbar-dark bg-dark")
+                a.navbar-brand(href="/")
+                    img(src="/images/hh.png" height="30" width="30" alt="Home")
                 div(class="collapse navbar-collapse" id="navbarNav")
                     ul.navbar-nav
-                        li.nav-item(id="nav-li-index" )
-                            a.nav-link(href="/") Home
                         li(class="nav-item dropdown" id="nav-dropdown-create")
-                            a(class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") CREATE
-                            .dropdown-menu(aria-labelledby="navbarDropdown")
+                            a(class="nav-link dropdown-toggle" href="#" id="navbarCreateDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") CREATE
+                            .dropdown-menu(aria-labelledby="navbarCreateDropdown")
                                 a.dropdown-item(id="nav-dropdown-create-insert_resource" href="/insert_resource") Resource
                                 a.dropdown-item(id="nav-dropdown-create-insert_row" href="/insert_row") Row
+                        li(class="nav-item dropdown" id="nav-dropdown-read")
+                            a(class="nav-link dropdown-toggle" href="#" id="navbarReadDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") READ
+                            .dropdown-menu(aria-labelledby="navbarReadDropdown")
+                                a.dropdown-item(id="nav-dropdown-read-resources" href="/read_resources") All Resources
+                                a.dropdown-item(id="nav-dropdown-read-resource" href="/read_resource") One Resource
+                        li(class="nav-item dropdown" id="nav-dropdown-update")
+                            a(class="nav-link dropdown-toggle" href="#" id="navbarUpdateDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") UPDATE
+                            .dropdown-menu(aria-labelledby="navbarUpdateDropdown")
+                                a.dropdown-item(id="nav-dropdown-update-resource" href="/update_resource") Resource Metadata
+                        li(class="nav-item dropdown" id="nav-dropdown-delete")
+                            a(class="nav-link dropdown-toggle" href="#" id="navbarDeleteDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") DELETE
+                            .dropdown-menu(aria-labelledby="navbarDeleteDropdown")
+                                a.dropdown-item(id="nav-dropdown-delete-resource" href="/delete_resource") Whole resource
         .container
             br
             block content

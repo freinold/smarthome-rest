@@ -1,9 +1,32 @@
 extends layout
 
 block content
-    h1= title
-    p Welcome to #{title}
+    .content
+        h1= title
 
+        h4 An API to access data of smarthomes via REST
+        p Final project for the course Web Systems Fundamentals at Halmstad University 2019.
+
+        h4 A short Presentation
+        p
+            a(href="http://ideweb2.hh.se/~marsle19/project/presentation.html" target="_blank") Have a look at our presentation!
+
+        h4 Built with
+        ul
+            li
+                a(href="https://nodejs.org/en/" target="_blank") Node.js
+            li
+                a(href="https://expressjs.com/" target="_blank") Express.js
+            li
+                a(href="https://postgresql.org/" target="_blank") PostgreSQL
+            li
+                a(href="https://pugjs.org/" target="_blank") Pug/Jade
+            li
+                a(href="https://jquery.com/" target="_blank") jQuery
+            li
+                a(href="https://sass-lang.com/" target="_blank") SASS
+            li
+                a(href="https://getbootstrap.com/" target="_blank") Bootstrap 4
 append scripts
     script.
         $("#nav-li-index").addClass("active");
