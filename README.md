@@ -9,6 +9,8 @@ $ git clone https://github.com/freinold/smarthome-rest.git
 ```
 ```
 $ npm start
+
+$npm install
 ```
 ```
 $ node bin/www 
