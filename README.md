@@ -18,3 +18,7 @@ $ node bin/www
 * [Node.js](https://nodejs.org/en/)
 * [Express](https://expressjs.com/)
 * [PostgreSQL](https://www.postgresql.org/)
+* [Pug/Jade](https://pugjs.org/)
+* [SASS](https://sass-lang.com/)
+* [jQuery](https://jquery.com/)
+* [Bootstrap4](https://getbootstrap.com/)
