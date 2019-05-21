@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><title>Insert new resource</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar sticky-top navbar-expand-md navbar-dark bg-dark">
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item" id="nav-li-index"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item dropdown" id="nav-dropdown-create"><a class="nav-link dropdown-toggle" href="#"
+                                                                      id="navbarDropdown" role="button"
+                                                                      data-toggle="dropdown" aria-haspopup="true"
+                                                                      aria-expanded="false">CREATE</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown"><a class="dropdown-item"
+                                                                               id="nav-dropdown-create-insert_resource"
+                                                                               href="/insert_resource">Resource</a><a
+                        class="dropdown-item" id="nav-dropdown-create-insert_row" href="/insert_row">Row</a></div>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container"><br>
+    <div class="content"><h1>Insert new resource</h1><br>
+        <form id="form" action="/view_resources" onsubmit="return send(this)">
+            <div class="form-group"><label for="resource_uuid">Resource UUID:</label><input class="form-control"
+                                                                                            id="resource_uuid"
+                                                                                            type="text"
+                                                                                            name="resource_uuid"></div>
+            <div class="form-group"><label for="resource_type">Resource Type:</label><input class="form-control"
+                                                                                            id="resource_type"
+                                                                                            type="text"
+                                                                                            name="resource_uuid"></div>
+            <div class="form-group"><label for="resource_model">Resource Model:</label><input class="form-control"
+                                                                                              id="resource_model"
+                                                                                              type="text"
+                                                                                              name="resource_uuid">
+            </div>
+            <div class="form-group"><label for="resource_adapter">Resource Adapter:</label><input class="form-control"
+                                                                                                  id="resource_adapter"
+                                                                                                  type="text"
+                                                                                                  name="resource_uuid">
+            </div>
+            <div class="form-group"><input type="submit"></div>
+        </form>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script src="javascripts/insert_resource.js"></script>
+<script>$(function () {
+  $("#nav-dropdown-create-insert_resource").addClass("active");
+  $("#nav-dropdown-create").addClass("active");
+});</script>
+</body>
+</html>
