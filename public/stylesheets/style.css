@@ -1,0 +1,11 @@
+.navbar-nav .show .dropdown-menu {
+  background-color: #343a40; }
+  .navbar-nav .show .dropdown-menu .dropdown-item {
+    color: rgba(255, 255, 255, 0.5); }
+  .navbar-nav .show .dropdown-menu .dropdown-item.active {
+    background-color: #FFFFFF;
+    color: #212529; }
+  .navbar-nav .show .dropdown-menu .dropdown-item:hover, .navbar-nav .show .dropdown-menu .dropdown-item:focus {
+    color: rgba(33, 37, 41, 0.5); }
+
+/*# sourceMappingURL=style.css.map */
