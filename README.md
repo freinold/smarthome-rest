@@ -1,10 +1,20 @@
-# smarthome-rest
+# Smart Home REST API
 Final project for the course Web Systems Fundamentals at Halmstad University 2019. 
-Rest API built with node.js. 
+
+## Getting Started
 
 To run it, use: 
-
+```
+$ git clone https://github.com/freinold/smarthome-rest.git
+```
+```
 $ npm start
-
+```
+```
 $ node bin/www 
+```
 
+## Built with
+* [Node.js](https://nodejs.org/en/)
+* [Express](https://expressjs.com/)
+* [PostgreSQL](https://www.postgresql.org/)
