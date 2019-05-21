@@ -8,12 +8,11 @@ router.use(express.json());
 let Pool = pg.Pool;
 let pool;
 let dbConfig;
+
 fs.readFile(__dirname.replace("/routes/api", "") + "/db/db_config.json", (err, content) => {
   dbConfig = JSON.parse(content);
-
   pool = Pool(dbConfig);
   pool.connect();
-
 });
 
 
