@@ -4,62 +4,61 @@ block content
     .content
         h1= title
         br
-        form(id="form" action="javascript:;" onsubmit="return send(this)")
+        div(class="alert alert-danger" style="display: none" id="errorDiv")
+        form(id="form" action="javascript:;" onsubmit="send()")
             .form-group
                 label(for="resource_uuid") Resource UUID:
                 input.form-control(id="resource_uuid" type="text")
             .form-group
                 label(for="resource_type") Resource Type:
-                input.form-control(id="resource_type" type="text")
+                input.form-control(id="resource_type" type="text" required)
             .form-group
                 label(for="resource_model") Resource Model:
-                input.form-control(id="resource_model" type="text")
+                input.form-control(id="resource_model" type="text" required)
             .form-group
                 label(for="resource_adapter") Resource Adapter:
-                input.form-control(id="resource_adapter" type="text")
+                input.form-control(id="resource_adapter" type="text" required)
             .form-group
                 label(for="name") Name:
-                input.form-control(id="name" type="text")
+                input.form-control(id="name" type="text" required)
             .form-group
-                label(for="description") Resource Adapter:
-                textarea.form-control(id="description")
+                label(for="description") Description:
+                textarea.form-control(id="description" required)
             .form-group
-                label(for="string_config") Resource Adapter:
-                textarea.form-control(id="string_config")
+                label(for="string_config") String configuration:
+                textarea.form-control(id="string_config" oninput="checkStringConfig()" required)
             .form-group
                 label Auto start:
                 | &nbsp
                 div(class="form-check form-check-inline")
-                    input.form-check-input(type="radio" id="auto_start_true" value="TRUE" name="auto_start")
+                    input.form-check-input(type="radio" id="auto_start_true" value="TRUE" name="auto_start" required)
                     label.form-check-label(for="auto_start_true") true
                 div(class="form-check form-check-inline")
-                    input.form-check-input(type="radio" id="auto_start_false" value="FALSE" name="auto_start")
+                    input.form-check-input(type="radio" id="auto_start_false" value="FALSE" name="auto_start" required)
                     label.form-check-label(for="auto_start_true") false
             .form-group
                 label Keep connected:
                 | &nbsp
                 div(class="form-check form-check-inline")
-                    input.form-check-input(type="radio" id="keep_connected_true" value="TRUE" name="keep_connected")
+                    input.form-check-input(type="radio" id="keep_connected_true" value="TRUE" name="keep_connected" required)
                     label.form-check-label(for="keep_connected_true") true
                 div(class="form-check form-check-inline")
-                    input.form-check-input(type="radio" id="keep_connected_false" value="FALSE" name="keep_connected")
+                    input.form-check-input(type="radio" id="keep_connected_false" value="FALSE" name="keep_connected" required)
                     label.form-check-label(for="keep_connected_false") false
             .form-group
                 label(for="name") Host IP:
-                input.form-control(id="host_ip" type="text")
+                input.form-control(id="host_ip" type="text" oninput="checkHostIp()" required)
             .form-group
                 input(class="btn btn-dark" type="submit")
                 | &nbsp;
                 input(class="btn btn-secondary" type="reset")
 append scripts
+    script(src="/javascripts/insert_resource.js")
     script.
       $(function () {
         $("#nav-dropdown-create-insert_resource").addClass("active");
         $("#nav-dropdown-create").addClass("active");
       });
 
-      function send() {
-
-      }
 
 
