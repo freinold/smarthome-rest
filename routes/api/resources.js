@@ -34,14 +34,16 @@ router.get("/", function (req, res, next) {
 router.get("/:resource_uuid", function (req, res, next) {
   let resource_uuid = req.params.resource_uuid;
   let onlyLatest = req.query.onlyLatest;
-  console.log(resource_uuid.replace("-", ""));
+  console.log(resource_uuid.replace(/"-"/g, ""));
   //Still needs to be fixed to be used by views
   let queryString = `SELECT * FROM ${resource_uuid.replace(/-/g, "")} ORDER BY db_time_stamp ASC;`;
   pool.query(queryString).then((queryResult) => {
-    if (onlyLatest === 'true')
-      res.send(queryResult.rows[0]);
-    else
-      res.send(r.rows);
+    if (onlyLatest === 'true'){
+      res.status(200).send(queryResult.rows[0]);
+    }
+    else{
+      res.status(200).send(queryResult.rows);
+    }
   }).catch(err => res.status(400).send("Error processing database request:\n", err));
 });
 
@@ -136,52 +138,38 @@ router.post("/", function (req, res, next) {
 router.post("/:resource_uuid", function (req, res, next) {
   let resource_uuid = req.params.resource_uuid;
   let sample = req.body.sample, unit = req.body.unit;
-  let queryString = `SELECT insert_${resource_uuid.replace(/-/g, "")}(${sample}, ${unit}, (SELECT CURRENT_TIMESTAMP), (SELECT CURRENT_TIMESTAMP));`;
+  let queryString = `SELECT insert_${resource_uuid.replace(/-/g, "")}('${sample}', ${unit}, (SELECT CURRENT_TIMESTAMP), (SELECT CURRENT_TIMESTAMP));`;
   pool.query(queryString).then((queryResult) => {
     res.status(201).send(queryResult);
   }).catch(err => res.status(400).send("Error processing database request:\n", err));
 
 });
 
-/**
- * UPDATE table "uuid" WHERE id = "row_id".
- */
-router.put("/:resource_uuid/:row_id", function (req, res, next) {
-  let resource_uuid = req.params.resource_uuid;
-  let row_id = req.params.row_id;
-  pool.query(""/*function*/, [resource_uuid, row_id], (error, result) => {
-    if (error) {
-      throw error;
-    }
-    res.sendStatus(201);
-  });
-});
 
 /**
  * DROP TABLE "uuid".
  */
 router.delete("/:resource_uuid", function (req, res, next) {
   let resource_uuid = req.params.resource_uuid;
-  let queryString = `SELECT drop_resource_table('${resource_uuid.replace(/-/g, "")}');`;
+  let queryString = `SELECT drop_resource_table('${resource_uuid.replace(/-/g, "")}'); DELETE FROM resource WHERE resource_uuid = '${resource_uuid.replace(/-/g, "")}';`;
   console.log(queryString);
   pool.query(queryString).then((queryResult) => {
-    res.sendStatus(200);
-    console.log('Table deleted.');
+    res.status(200).send('Table deleted.');
   }).catch(err => res.status(400).send("Error processing database request:\n", err));
 });
 
-/**
- * DELETE the row with row_id from table with resource_id.
+
+/*
+ * UPDATE row in table resources according to given uuid. 
  */
-router.delete("/:resource_uuid/:row_id", function (req, res, next) {
+router.put("/:resource_uuid", function(req, res, next) {
+  let column = req.body.column, value = req.body.value; 
   let resource_uuid = req.params.resource_uuid;
-  let row_id = req.params.row_id;
-  pool.query(""/*function*/, [resource_uuid, row_id], (error, result) => {
-    if (error) {
-      throw error;
-    }
-    //return success
-  });
+  let queryString = `UPDATE resource SET ${column} = '${value}' WHERE resource_uuid = '${resource_uuid.replace(/-/g, "")}';`;
+  console.log(queryString);
+  pool.query(queryString).then((queryResult) => {
+    res.status(200).send('Table updated.');
+  }).catch(err => res.status(400).send("Error processing database request:\n", err));
 });
 
 
