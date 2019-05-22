@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en" prefix="og: http://ogp.me/ns#">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -22,7 +22,8 @@
     <!-- <link rel="canonical" href="http://your-url.com/permalink"> -->
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,700,700i%7CMaitree:200,300,400,600,700&amp;subset=latin-ext" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,700,700i%7CMaitree:200,300,400,600,700&amp;subset=latin-ext"
+          rel="stylesheet">
 
     <!-- CSS Base -->
     <link rel="stylesheet" type='text/css' media='all' href="static/css/webslides.css">
@@ -33,19 +34,23 @@
     <!-- SOCIAL CARDS (ADD YOUR INFO) -->
 
     <!-- FACEBOOK -->
-    <meta property="og:url" content="/" />
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="WebSlides Components" /> <!-- EDIT -->
-    <meta property="og:description" content="Learn WebSlides in simple steps starting from basic to advanced concepts with examples."> <!-- EDIT -->
+    <meta property="og:url" content="/"/>
+    <meta property="og:type" content="article"/>
+    <meta property="og:title" content="WebSlides Components"/> <!-- EDIT -->
+    <meta property="og:description"
+          content="Learn WebSlides in simple steps starting from basic to advanced concepts with examples.">
+    <!-- EDIT -->
     <meta property="og:updated_time" content="2017-01-04T17:25:31"> <!-- EDIT -->
-    <meta property="og:image" content="static/images/share-webslides.jpg" > <!-- EDIT -->
+    <meta property="og:image" content="static/images/share-webslides.jpg"> <!-- EDIT -->
 
     <!-- TWITTER -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@webslides"> <!-- EDIT -->
     <meta name="twitter:creator" content="@jlantunez"> <!-- EDIT -->
     <meta name="twitter:title" content="WebSlides Components"> <!-- EDIT -->
-    <meta name="twitter:description" content="Learn WebSlides in simple steps starting from basic to advanced concepts with examples."> <!-- EDIT -->
+    <meta name="twitter:description"
+          content="Learn WebSlides in simple steps starting from basic to advanced concepts with examples.">
+    <!-- EDIT -->
     <meta name="twitter:image" content="static/images/share-webslides.jpg"> <!-- EDIT -->
 
     <!-- FAVICONS -->
@@ -60,16 +65,16 @@
     <!-- Android -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#333333">
-  </head>
-  <body>
-    <header role="banner">
-      <nav role="navigation">
+</head>
+<body>
+<header role="banner">
+    <nav role="navigation">
         <p class="logo"><a href="../index.html" title="WebSlides">WebSlides</a></p>
-      </nav>
-    </header>
+    </nav>
+</header>
 
-    <main role="main">
-      <article id="webslides">
+<main role="main">
+    <article id="webslides">
 
         <!-- Quick Guide
           - Each parent <section> in the <article id="webslides"> element is an individual slide.
@@ -78,77 +83,118 @@
         -->
 
         <section class="bg-black-blue aligncenter">
-         <span class="background dark" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Elektronikcentrum_i_Halmstad_p%C3%A5_invigningsdagen%2C_11_september_2015.JPG/1200px-Elektronikcentrum_i_Halmstad_p%C3%A5_invigningsdagen%2C_11_september_2015.JPG')"></span>
-          <!--.wrap = container (width: 90%) -->
-          <div class="wrap">
-            <p class="text-subtitle">Halmstad University 2019</p>
-            <h1 class="text-landing">Smart Home REST API</h1>
-            <p class="text-symbols">* * *</p>
-          </div>
-          <!-- .end .wrap -->
+            <span class="background dark"
+                  style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Elektronikcentrum_i_Halmstad_p%C3%A5_invigningsdagen%2C_11_september_2015.JPG/1200px-Elektronikcentrum_i_Halmstad_p%C3%A5_invigningsdagen%2C_11_september_2015.JPG')"></span>
+            <!--.wrap = container (width: 90%) -->
+            <div class="wrap">
+                <p class="text-subtitle">Halmstad University 2019</p>
+                <h1 class="text-landing">Smart Home REST API</h1>
+                <p class="text-symbols">* * *</p>
+            </div>
+            <!-- .end .wrap -->
         </section>
 
         <section class="slide-top">
-          <div class="wrap">
-            <div class="content-left">
-              <h3>What is a REST API?</h3>
-              <p>REST stands for Representational State Transfer, a software architectural style that defines a set of constraints to be used for creating Web services. </p>
-                <p>Clients send requests to retrieve or modify resources, and servers send responses to these requests. The requests are made using HTTP verbs, a path to the resource and optionally a body.</p>
+            <div class="wrap">
+                <div class="content-left">
+                    <h3>Purpose of our project</h3>
+                    <p>Designing a reusable Application Production Interface (API) for Frontend Smart Home Interfaces,
+                        which interacts with the existing postgreSQL database and can be used by other students in the
+                        future.</p>
+                    <p>This task will be implemented through a REST API.</p>
+                </div>
             </div>
-          </div>
-          <!-- .end .wrap -->
+            <!-- .end .wrap -->
         </section>
         <section>
-          <div class="wrap">
-            <div class="content-left">
-              <h3>Why use Node.js?</h3>
-              <p>Node is a JavaScript run-time enviroment designed to build scalable network applications.</p>
-              <p>It provides a rich library of various modules which simplifies the development of applications.</p>
+            <div class="wrap">
+                <div class="content-left">
+                    <h3>What is a REST API?</h3>
+                    <p>REST is short for for <b>Re</b>presentational <b>S</b>tate <b>T</b>ransfer, a special style for
+                        Web Service architecture.</p>
+                    <p>Clients send requests to a server interface, using HTTP verbs, a path to the resource, and
+                        optionally a body.</p>
+                    <P>The server replies to these with the requested information, and also tells how to use the
+                        API.</P>
+                </div>
             </div>
-          </div>
-          <!-- .end .wrap -->
+            <!-- .end .wrap -->
+        </section>
+        <section>
+            <div class="wrap">
+                <div class="content-left">
+                    <h3>Methods of the API</h3>
+                    <p>REST represents the database CRUD (Create, Read, Update, Delete) operations through the 4 common
+                        HTTP methods:</p>
+                    <p><b>POST: </b>Creates an (sub-)instance for the referred resource (values in HTTP body)</p>
+                    <p><b>GET: </b>Selects the information stored in the referred resource (often used with URL
+                        parameters)</p>
+                    <p><b>PUT: </b>Updates the referred resource (values in HTTP body)</p>
+                    <p><b>DELETE: </b>Deletes the referred resource</p>
+                </div>
+            </div>
+            <!-- .end .wrap -->
         </section>
         <section class="slide-bottom">
-          <div class="wrap">
-            <div class="content-left">
-              <h3>Purpose of our project</h3>
-              <p>Designing a reusable API for the Smart Home Interface that interacts with the postgreSQL database and can help other students in the future.</p>
+            <div class="wrap">
+                <div class="content-left">
+                    <h3>Why use Node.js?</h3>
+                    <p>Node is a JavaScript run-time (backend) enviroment designed to build scalable network
+                        applications.</p>
+                    <p>It provides a rich library of various modules which simplifies the development of applications:
+                        <a href="https://npmjs.com/" target="_blank">NPM.</a></p>
+                    <p>For the REST API, the main module we need is Express.<br/>It provides an easy way to handle HTTP
+                        requests asynchronously.</p>
+                </div>
             </div>
-          </div>
-          <!-- .end .wrap -->
+            <!-- .end .wrap -->
         </section>
 
         <section>
-          <div class="wrap size-50">
-            <h2>Requests</h2>
-            <p class="text-intro">This is what a client can do with our API:</p>
-            <hr>
-            <ul class="description">
-              <li><span style="width: 280px; font-weight: bold">GET /api/resources/</span> get all entries on the table resource</li>
-              <li><span style="width: 280px; font-weight: bold">GET /api/resources/:uuid</span> get all entries on a specific resource table</li>
-              <li><span style="width: 280px; font-weight: bold" >GET /api/resources/:uuid?=onlyLatest=true</span> get the last entry of the specific resource table</li>
-              <li><span style="width: 280px; font-weight: bold">POST /api/resources/</span> insert on the table resource</li>
-              <li><span style="width: 280px; font-weight: bold">POST /api/resources/:uuid</span> insert on a specific resource table</li>
-              <li><span style="width: 280px; font-weight: bold">UPDATE /api/resources/:uuid</span> updates the row of a specific resource on the resource table</li>
-              <li><span style="width: 280px; font-weight: bold">DELETE /api/resources/:uuid</span> deletes a specific resource table and its correspondent row on the resource table</li>
-            </ul>
-          </div>
-          <!-- .end .wrap -->
+            <div class="wrap size-50">
+                <h2>Requests</h2>
+                <p class="text-intro">This is what a client can do with our API:</p>
+                <hr>
+                <ul class="description">
+                    <li><span style="width: 280px; font-weight: bold">GET /api/resources/</span> get all entries on the
+                        table resource
+                    </li>
+                    <li><span style="width: 280px; font-weight: bold">GET /api/resources/:uuid</span> get all entries on
+                        a specific resource table
+                    </li>
+                    <li><span style="width: 280px; font-weight: bold">GET /api/resources/:uuid?=onlyLatest=true</span>
+                        get the last entry of the specific resource table
+                    </li>
+                    <li><span style="width: 280px; font-weight: bold">POST /api/resources/</span> insert on the table
+                        resource
+                    </li>
+                    <li><span style="width: 280px; font-weight: bold">POST /api/resources/:uuid</span> insert on a
+                        specific resource table
+                    </li>
+                    <li><span style="width: 280px; font-weight: bold">PUT /api/resources/:uuid</span> updates the row
+                        of a specific resource on the resource table
+                    </li>
+                    <li><span style="width: 280px; font-weight: bold">DELETE /api/resources/:uuid</span> deletes a
+                        specific resource table and its correspondent row on the resource table
+                    </li>
+                </ul>
+            </div>
+            <!-- .end .wrap -->
         </section>
 
-      </article>
-    </main>
-    <!--main-->
+    </article>
+</main>
+<!--main-->
 
-    <!-- Required -->
-    <script src="static/js/webslides.js"></script>
+<!-- Required -->
+<script src="static/js/webslides.js"></script>
 
-    <script>
-      window.ws = new WebSlides();
-    </script>
+<script>
+  window.ws = new WebSlides();
+</script>
 
-    <!-- OPTIONAL - svg-icons.js (fontastic.me - Font Awesome as svg icons) -->
-    <script defer src="static/js/svg-icons.js"></script>
+<!-- OPTIONAL - svg-icons.js (fontastic.me - Font Awesome as svg icons) -->
+<script defer src="static/js/svg-icons.js"></script>
 
-  </body>
+</body>
 </html>
