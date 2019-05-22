@@ -161,6 +161,7 @@ router.delete("/:resource_uuid", function (req, res, next) {
 
 /*
  * UPDATE row in table resources according to given uuid. 
+ * Provide column and value to be replaced in the body. 
  */
 router.put("/:resource_uuid", function(req, res, next) {
   let column = req.body.column, value = req.body.value; 
