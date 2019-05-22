@@ -2,10 +2,31 @@ extends layout
 
 block content
     h1= title
+    .content
 
 append scripts
     script.
       $(function () {
         $("#nav-dropdown-read-resources").addClass("active");
         $("#nav-dropdown-read").addClass("active");
+        getResources();
       });
+
+      function getResources() {
+        let content = $("#content");
+        $.ajax({
+          type: "GET",
+          url: "/api/resources",
+          contentType: "application/json"
+        }).done(function (data) {
+          let resources = JSON.parse(data);
+          // Display resources.
+        }).fail(function (statusText) {
+          let errorDiv = $("<div>");
+          errorDiv.addClass("alert alert-danger");
+          errorDiv.text("Database call failed:\n"+statusText);
+          content.append(errorDiv);
+        });
+
+      }
+
