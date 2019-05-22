@@ -113,11 +113,12 @@ router.post("/", function (req, res, next) {
       }
     }
   }
+  console.log(queryString);
   if (queryString && booleansInRightFormat) {
     // queryString is present and booleans in the right format, so the parameters were legal.
     pool.query(queryString).then(queryResult => {
-      res.insert_resource(queryResult);
-    }).catch(err => res.status(400).insert_resource("Error processing database request:\n", err));
+      res.status(200).send(queryResult);
+    }).catch(err => res.status(400).send("Error processing database request:\n" + err));
   } else {
     // No queryString present or booleans in the wrong format -> Wrong parameters, send HTTP Error Code 418: I'm a teapot.
     let errorMessage = "";
@@ -127,7 +128,7 @@ router.post("/", function (req, res, next) {
     if (!booleansInRightFormat) {
       errorMessage += "One of the boolean values was not provided the right way, please check the representation."
     }
-    res.status(400).insert_resource("Error processing payload:\n" + errorMessage);
+    res.status(400).send("Error processing payload:\n" + errorMessage);
   }
 });
 

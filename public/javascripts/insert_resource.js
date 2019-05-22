@@ -1,14 +1,15 @@
 function checkStringConfig() {
   let element = $("#string_config");
-  let string_config = JSON.parse(element.val());
   try {
-    let json = JSON.parse(string_config)
+    let json = JSON.parse(element.val());
     if (json && typeof json == "object") {
       element.get(0).setCustomValidity("");
     } else {
+      console.log("Hey"); 
       element.get(0).setCustomValidity("Please provide a JSON representation");
     }
   } catch (e) {
+    console.log("Ho"); 
     element.get(0).setCustomValidity("Please provide a JSON representation");
   }
 }
