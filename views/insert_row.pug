@@ -2,10 +2,66 @@ extends layout
 
 block content
     h1= title
-
+    br
+    form(id="form" action="javascript:;" onsubmit="send()")
+        .form-group
+            label(for="resource_uuid") Resource UUID:
+            input.form-control(id="resource_uuid" type="text")
+        .form-group
+            label Sample:
+            | &nbsp
+            div(class="form-check form-check-inline")
+                input.form-check-input(type="radio" id="sample_true" value="TRUE" name="sample" required)
+                label.form-check-label(for="sample_true") true
+            div(class="form-check form-check-inline")
+                input.form-check-input(type="radio" id="sample_false" value="FALSE" name="sample" required)
+                label.form-check-label(for="sample_false") false
+        .form-group
+                label(for="unit") Unit:
+                input.form-control(id="unit" type="text" oninput="checkInteger()" required)
+        .form-group
+            input(class="btn btn-dark" type="submit")
+            | &nbsp;
+            input(class="btn btn-secondary" type="reset")
 append scripts
     script.
       $(function () {
         $("#nav-dropdown-create-insert_row").addClass("active");
         $("#nav-dropdown-create").addClass("active");
       });
+
+      function checkInteger() {
+        let element = $("#unit");
+        let unit = element.val();
+        unit = parseInt(Number(unit));
+        if(Number.isInteger(unit)) element.get(0).setCustomValidity("");
+        else element.get(0).setCustomValidity("Please provide an integer."); 
+      }
+
+      function send() {
+        let payload = {};
+        payload.unit = $("#unit").val();
+        
+        let resource_uuid = $("#resource_uuid").val();
+        if (resource_uuid !== "") {
+          payload.resource_uuid = resource_uuid;
+        }
+
+        payload.sample = $("#sample_true").is(":checked");
+
+        payload = JSON.stringify(payload);
+        $.ajax({
+          type: "POST",
+          url: "/api/resources/" + resource_uuid,
+          data: payload,
+          contentType: "application/json"
+        }).done(function () {
+          window.location = "/read_resources";
+        }).fail(function (statusText) {
+          console.log(statusText);
+          let element = $("#errorDiv");
+          element.html("<p>" + statusText + "</p>");
+          element.css("display", "block");
+        });
+
+      }
