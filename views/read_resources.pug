@@ -12,6 +12,10 @@ append scripts
         getResources();
       });
 
+      function display_resources(resources) {
+        $("#content").text(JSON.stringify(resources));
+      }
+
       function getResources() {
         let content = $("#content");
         $.ajax({
@@ -20,7 +24,7 @@ append scripts
           contentType: "application/json"
         }).done(function (data) {
           let resources = JSON.parse(data);
-          // Display resources.
+          display_resources(resources);
         }).fail(function (statusText) {
           let errorDiv = $("<div>");
           errorDiv.addClass("alert alert-danger");
