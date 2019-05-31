@@ -2,7 +2,7 @@ extends layout
 
 block content
     h1= title
-    .content
+    .content(id="content")
 
 append scripts
     script.
@@ -13,6 +13,7 @@ append scripts
       });
 
       function display_resources(resources) {
+        console.log(resources);
         $("#content").text(JSON.stringify(resources));
       }
 
@@ -23,8 +24,7 @@ append scripts
           url: "/api/resources",
           contentType: "application/json"
         }).done(function (data) {
-          let resources = JSON.parse(data);
-          display_resources(resources);
+          display_resources(data);
         }).fail(function (statusText) {
           let errorDiv = $("<div>");
           errorDiv.addClass("alert alert-danger");
