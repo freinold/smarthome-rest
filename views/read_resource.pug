@@ -15,6 +15,7 @@ block content
                 input(class="btn btn-dark" type="submit")
                 | &nbsp;
                 input(class="btn btn-secondary" type="reset")
+        div(id="resource")
 
 append scripts
     script.
@@ -25,7 +26,7 @@ append scripts
 
       function display_resource(resource) {
         console.log(resource);
-        $("#content").append(JSON.stringify(resource));
+        $("#resource").text(JSON.stringify(resource));
       }
 
       function send() {
