@@ -21,8 +21,7 @@ append scripts
         let content = $("#content");
         $.ajax({
           type: "GET",
-          url: "/api/resources",
-          contentType: "application/json"
+          url: "/api/resources"
         }).done(function (data) {
           display_resources(data);
         }).fail(function (statusText) {

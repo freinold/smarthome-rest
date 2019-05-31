@@ -2,6 +2,19 @@ extends layout
 
 block content
     h1= title
+    .content
+        div(class="alert alert-danger" style="display: none" id="errorDiv")
+        form(id="form" action="javascript:;" onsubmit="send()")
+            .form-group
+                label(for="resource_uuid") Resource UUID:
+                input.form-control(id="resource_uuid" type="text" required)
+            .form-check
+                input.form-check-input(id="onlyLatest" type="checkbox" value="true")
+                label.form-check-label(for="onlyLatest") Request only latest change
+            .form-group
+                input(class="btn btn-dark" type="submit")
+                | &nbsp;
+                input(class="btn btn-secondary" type="reset")
 
 append scripts
     script.
@@ -9,3 +22,26 @@ append scripts
         $("#nav-dropdown-read-resource").addClass("active");
         $("#nav-dropdown-read").addClass("active");
       });
+
+      function display_resource(resource) {
+        console.log(resource);
+        $("#content").append(JSON.stringify(resource));
+      }
+
+      function send() {
+        let payload = "onlyLatest="+$("#onlyLatest").val()
+        let resource_uuid = $("#resource_uuid").val();
+        $.ajax({
+          type: "GET",
+          url: "/api/resources/" + resource_uuid,
+          data: payload
+        }).done(function (data) {
+          $("#errorDiv").css("display", "none");
+          display_resource(data);
+        }).fail(function (statusText) {
+          console.log(statusText);
+          let element = $("#errorDiv");
+          element.html("<p>" + statusText + "</p>");
+          element.css("display", "block");
+        });
+      }
