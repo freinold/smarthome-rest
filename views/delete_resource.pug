@@ -1,7 +1,18 @@
 extends layout
 
 block content
-    h1= title
+    .content
+        h1= title
+        div(class="alert alert-danger" style="display: none" id="errorDiv")
+        form(id="form" action="javascript:;" onsubmit="send()")
+            .form-group
+                label(for="resource_uuid") Resource UUID:
+                input.form-control(id="resource_uuid" type="text" required)
+            .form-group
+                input(class="btn btn-dark" type="submit")
+                | &nbsp;
+                input(class="btn btn-secondary" type="reset")
+
 
 append scripts
     script.
@@ -9,3 +20,19 @@ append scripts
         $("#nav-dropdown-delete-resource").addClass("active");
         $("#nav-dropdown-delete").addClass("active");
       });
+
+      function send() {
+        let resource_uuid = $("#resource_uuid").val();
+        $.ajax({
+          type: "DELETE",
+          url: "/api/resources/" + resource_uuid,
+        }).done(function (data) {
+          window.location = "/read_resources";
+        }).fail(function (statusText) {
+          console.log(statusText);
+          let element = $("#errorDiv");
+          element.html("<p>" + statusText + "</p>");
+          element.css("display", "block");
+        });
+      }
+

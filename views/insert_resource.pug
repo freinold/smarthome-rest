@@ -66,11 +66,9 @@ append scripts
           if (json && typeof json == "object") {
             element.get(0).setCustomValidity("");
           } else {
-            console.log("Hey");
             element.get(0).setCustomValidity("Please provide a JSON representation");
           }
         } catch (e) {
-          console.log("Ho");
           element.get(0).setCustomValidity("Please provide a JSON representation");
         }
       }
