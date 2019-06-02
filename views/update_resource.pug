@@ -10,44 +10,20 @@ block content
                 label(for="resource_uuid") Resource UUID:
                 input.form-control(id="resource_uuid" type="text" required)
             .form-group
-                label(for="resource_type") Resource Type:
-                input.form-control(id="resource_type" type="text")
+                label(for="column") Column:
+                select.custom-select(id="column" name="column" required)
+                    option(value="resource_type") Resource Type
+                    option(value="resource_model") Resource Model
+                    option(value="resource_adapter") Resource Adapter
+                    option(value="name") Name
+                    option(value="description") Description
+                    option(value="string_configuration") String Configuration
+                    option(value="host_ip") Host IP
+                    option(value="auto_start") Auto Start
+                    option(value="keep_connected") Keep connected
             .form-group
-                label(for="resource_model") Resource Model:
-                input.form-control(id="resource_model" type="text")
-            .form-group
-                label(for="resource_adapter") Resource Adapter:
-                input.form-control(id="resource_adapter" type="text")
-            .form-group
-                label(for="name") Name:
-                input.form-control(id="name" type="text")
-            .form-group
-                label(for="description") Description:
-                textarea.form-control(id="description" )
-            .form-group
-                label(for="string_config") String configuration:
-                textarea.form-control(id="string_config" oninput="checkStringConfig()" )
-            .form-group
-                label Auto start:
-                | &nbsp
-                div(class="form-check form-check-inline")
-                    input.form-check-input(type="radio" id="auto_start_true" value="TRUE" name="auto_start" )
-                    label.form-check-label(for="auto_start_true") true
-                div(class="form-check form-check-inline")
-                    input.form-check-input(type="radio" id="auto_start_false" value="FALSE" name="auto_start" )
-                    label.form-check-label(for="auto_start_false") false
-            .form-group
-                label Keep connected:
-                | &nbsp
-                div(class="form-check form-check-inline")
-                    input.form-check-input(type="radio" id="keep_connected_true" value="TRUE" name="keep_connected" )
-                    label.form-check-label(for="keep_connected_true") true
-                div(class="form-check form-check-inline")
-                    input.form-check-input(type="radio" id="keep_connected_false" value="FALSE" name="keep_connected" )
-                    label.form-check-label(for="keep_connected_false") false
-            .form-group
-                label(for="name") Host IP:
-                input.form-control(id="host_ip" type="text" oninput="checkHostIp()")
+                label(for="value") Value:
+                input.form-control(id="value" name="value" required)
             .form-group
                 input(class="btn btn-dark" type="submit")
                 | &nbsp;
@@ -59,49 +35,14 @@ append scripts
         $("#nav-dropdown-update").addClass("active");
       });
 
-      function checkStringConfig() {
-        let element = $("#string_config");
-        try {
-          let json = JSON.parse(element.val());
-          if (json && typeof json == "object") {
-            element.get(0).setCustomValidity("");
-          } else {
-            element.get(0).setCustomValidity("Please provide a JSON representation");
-          }
-        } catch (e) {
-          element.get(0).setCustomValidity("Please provide a JSON representation");
-        }
-      }
-
-      function checkHostIp() {
-        let element = $("#host_ip");
-        let host_ip = element.val();
-        if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(host_ip)) {
-          element.get(0).setCustomValidity("");
-        } else {
-          element.get(0).setCustomValidity("No valid IP-address");
-        }
-      }
-
       function send() {
         let resource_uuid = $("#resource_uuid").val();
         let payload = {};
-        let formfields = ["resource_type", "resource_model", "resource_adapter", "name", "description", "string_config", "host_ip"]
-        formfields.forEach(function (field) {
-          let elem = $("#" + field);
-          if (elem.val())
-            payload[field] = elem.val();
-        });
 
-        console.log(payload);
-        let radiobuttons = ["auto_start", "keep_connected"];
-        radiobuttons.forEach(function (button) {
-          if ($("#" + button + "_true").is(":checked") || $("#" + button + "_false").is(":checked"))
-            payload[button] = $("#" + button + "_true").is("checked");
-        });
+        payload.column = $("#column").val();
+        payload.value = $("#value").val();
 
         payload = JSON.stringify(payload);
-        console.log(payload);
         $.ajax({
           type: "PUT",
           url: "/api/resources/" + resource_uuid,
