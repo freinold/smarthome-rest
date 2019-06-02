@@ -6,7 +6,7 @@ var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
 
 var indexRouter = require('./routes/index');
-//var resourcesRouter = require('./routes/api/resources');
+var resourcesRouter = require('./routes/api/resources');
 
 let jwt = require('jsonwebtoken');
 let config = require('./configure');
@@ -33,7 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/login', auth.login);
 app.use('/', indexRouter);
-//app.use('/api/resources/', middleware.checkToken, resourcesRouter);
+app.use('/api/resources/', middleware.checkToken, resourcesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
