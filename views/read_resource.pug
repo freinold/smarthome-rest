@@ -33,7 +33,7 @@ append scripts
         let payload;
         let onlyLatest = $("#onlyLatest");
         if (onlyLatest.is(":checked"))
-          payload = "onlyLatest=" + onlyLatest.val()
+          payload = "onlyLatest=" + onlyLatest.val();
         let resource_uuid = $("#resource_uuid").val();
         $.ajax({
           type: "GET",

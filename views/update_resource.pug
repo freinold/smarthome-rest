@@ -87,19 +87,20 @@ append scripts
         let resource_uuid = $("#resource_uuid").val();
         let payload = {};
         let formfields = ["resource_type", "resource_model", "resource_adapter", "name", "description", "string_config", "host_ip"]
-        for (let field in formfields) {
+        formfields.forEach(function (field) {
           let elem = $("#" + field);
           if (elem.val())
             payload[field] = elem.val();
-        }
+        });
 
         let radiobuttons = ["auto_start", "keep_connected"];
-        for (let button in radiobuttons) {
+        radiobuttons.forEach(function (button) {
           if ($("#" + button + "_true").is(":checked") || $("#" + button + "_false").is(":checked"))
             payload[button] = $("#" + button + "_true").is("checked");
-        }
+        });
 
         payload = JSON.stringify(payload);
+        console.log(payload);
         $.ajax({
           type: "PUT",
           url: "/api/resources/" + resource_uuid,
