@@ -93,6 +93,7 @@ append scripts
             payload[field] = elem.val();
         }
 
+        console.log(payload);
         let radiobuttons = ["auto_start", "keep_connected"];
         for (let button in radiobuttons) {
           if ($("#" + button + "_true").is(":checked") || $("#" + button + "_false").is(":checked"))
